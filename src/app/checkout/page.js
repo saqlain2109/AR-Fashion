@@ -115,14 +115,19 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
       <StoreHeader />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="mb-6">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Checkout Details</h1>
+        <div className="mb-8">
+          <span className="text-xs font-extrabold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+            Secure WhatsApp Checkout
+          </span>
+          <h1 className="font-serif-luxury text-3xl sm:text-4xl font-black text-slate-950 tracking-tight mt-2">
+            Delivery & Order Confirmation
+          </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Fill in your delivery address to generate your official order record and connect with our WhatsApp sales concierge.
+            Provide your recipient information to generate your verified database order and connect with our concierge.
           </p>
         </div>
 
@@ -134,24 +139,24 @@ export default function CheckoutPage() {
         )}
 
         {cart.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3 max-w-md mx-auto my-8">
-            <h3 className="font-bold text-slate-800 text-base">Your shopping bag is empty</h3>
-            <p className="text-xs text-slate-400">Please choose items before checkout.</p>
+          <div className="bg-white rounded-3xl border border-stone-200 p-12 text-center space-y-3 max-w-md mx-auto my-8">
+            <h3 className="font-serif-luxury font-bold text-slate-900 text-lg">Your shopping bag is empty</h3>
+            <p className="text-xs text-slate-500">Please choose your outfits before proceeding to checkout.</p>
             <Link
               href="/shop"
-              className="inline-block px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold"
+              className="inline-block px-6 py-3 bg-emerald-700 text-white rounded-xl text-xs font-bold hover:bg-emerald-800"
             >
-              Back to Catalog
+              Browse Collections
             </Link>
           </div>
         ) : (
           <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Delivery Form Column */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-5">
-                <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <Truck size={18} className="text-emerald-600" />
-                  <span>1. Delivery & Contact Details</span>
+              <div className="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-8 shadow-sm space-y-5">
+                <h2 className="font-serif-luxury text-lg font-bold text-slate-900 flex items-center gap-2 border-b border-stone-100 pb-3">
+                  <Truck size={19} className="text-emerald-700" />
+                  <span>1. Recipient & Delivery Information</span>
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -165,49 +170,49 @@ export default function CheckoutPage() {
                       placeholder="e.g. Mohammad Tanvir Hasan"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
                     />
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
                     <label className="font-bold text-slate-700">
-                      WhatsApp / Mobile Phone Number <span className="text-rose-500">*</span>
+                      WhatsApp / Mobile Number <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="tel"
                       required
-                      placeholder="e.g. 01711223344 or +8801711223344"
+                      placeholder="e.g. 01711223344"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
                     />
                     <p className="text-[11px] text-slate-400">
-                      Our representative will send confirmation and parcel tracking to this WhatsApp number.
+                      Order status and dispatch confirmation will be shared on this WhatsApp number.
                     </p>
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
                     <label className="font-bold text-slate-700">
-                      Street Address & Apartment Details <span className="text-rose-500">*</span>
+                      Delivery Address & Street Details <span className="text-rose-500">*</span>
                     </label>
                     <textarea
                       rows={2}
                       required
-                      placeholder="House #, Road #, Sector / Area, Landmark..."
+                      placeholder="House #, Road #, Area / Landmark..."
                       value={deliveryAddress}
                       onChange={(e) => setDeliveryAddress(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="font-bold text-slate-700">
-                      City / District <span className="text-rose-500">*</span>
+                      City / Region <span className="text-rose-500">*</span>
                     </label>
                     <select
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-semibold"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-semibold"
                     >
                       <option value="Dhaka">Dhaka City (Inside - ৳100)</option>
                       <option value="Chittagong">Chittagong (Nationwide - ৳150)</option>
@@ -228,18 +233,18 @@ export default function CheckoutPage() {
                       placeholder="e.g. 1213"
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-mono"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono"
                     />
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">Special Order Instructions (Optional)</label>
+                    <label className="font-bold text-slate-700">Order Instructions (Optional)</label>
                     <textarea
                       rows={2}
-                      placeholder="e.g. Gift wrapping requested, deliver after 4 PM, call before arrival..."
+                      placeholder="e.g. Gift wrapping requested, deliver after 5 PM, call upon arrival..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"
+                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl"
                     />
                   </div>
                 </div>
@@ -247,18 +252,18 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Summary & Place Button Column */}
-            <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-5">
-              <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center justify-between">
+            <div className="bg-white rounded-3xl border border-stone-200/90 p-6 shadow-sm space-y-5">
+              <h3 className="font-serif-luxury font-bold text-slate-900 text-base border-b border-stone-100 pb-3 flex items-center justify-between">
                 <span>Order Summary</span>
-                <span className="text-xs text-slate-400 font-semibold">{totalCount} item(s)</span>
+                <span className="text-xs font-mono text-slate-400 font-normal">{totalCount} item(s)</span>
               </h3>
 
               {/* Items mini list */}
-              <div className="max-h-56 overflow-y-auto space-y-2.5 divide-y divide-slate-100 pr-1 scrollbar-thin text-xs">
+              <div className="max-h-56 overflow-y-auto space-y-2.5 divide-y divide-stone-100 pr-1 scrollbar-thin text-xs">
                 {cart.map((item) => (
                   <div key={item.id} className="pt-2 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 rounded-lg bg-slate-100 overflow-hidden border shrink-0">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden border border-stone-200 shrink-0">
                         {item.productImage && (
                           <img src={item.productImage} alt="" className="w-full h-full object-cover" />
                         )}
@@ -268,11 +273,11 @@ export default function CheckoutPage() {
                           {item.productName}
                         </p>
                         <p className="text-[10px] text-slate-500">
-                          {item.colour} &bull; {item.size} &bull; Qty {item.quantity}
+                          {item.colour} &bull; {item.size} &bull; Qty: {item.quantity}
                         </p>
                       </div>
                     </div>
-                    <span className="font-bold text-slate-900 shrink-0">
+                    <span className="font-black text-slate-900 shrink-0">
                       {formatPrice(item.unitPrice * item.quantity)}
                     </span>
                   </div>
@@ -280,7 +285,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Financial Breakdown */}
-              <div className="border-t border-slate-200 pt-3 space-y-2 text-xs text-slate-600">
+              <div className="border-t border-stone-200 pt-3 space-y-2 text-xs text-slate-600">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span className="font-bold text-slate-900">{formatPrice(subtotal)}</span>
@@ -295,9 +300,9 @@ export default function CheckoutPage() {
                     )}
                   </span>
                 </div>
-                <div className="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
+                <div className="border-t border-stone-100 pt-3 flex justify-between text-base font-black text-slate-950 font-serif-luxury">
                   <span>Total Payable:</span>
-                  <span className="text-emerald-700">{formatPrice(grandTotal)}</span>
+                  <span className="text-emerald-800 text-lg">{formatPrice(grandTotal)}</span>
                 </div>
               </div>
 
@@ -305,12 +310,12 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white font-black text-sm rounded-2xl shadow-xl shadow-green-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white font-black text-sm rounded-2xl shadow-xl shadow-green-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <>
                     <Loader2 size={18} className="animate-spin" />
-                    <span>Verifying Stock & Creating Order...</span>
+                    <span>Confirming Order...</span>
                   </>
                 ) : (
                   <>
@@ -322,11 +327,11 @@ export default function CheckoutPage() {
 
               <div className="pt-2 text-[11px] text-slate-400 space-y-1.5 leading-relaxed">
                 <p className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                  <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
+                  <CheckCircle2 size={13} className="text-emerald-700 shrink-0" />
                   <span>Real database order created with unique tracking ID.</span>
                 </p>
                 <p className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                  <ShieldCheck size={13} className="text-emerald-600 shrink-0" />
+                  <ShieldCheck size={13} className="text-emerald-700 shrink-0" />
                   <span>Cash on Delivery upon parcel handover.</span>
                 </p>
               </div>

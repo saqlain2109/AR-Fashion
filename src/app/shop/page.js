@@ -89,14 +89,14 @@ export default async function ShopPage({ searchParams }) {
   const availableColours = [...new Set(allVariants.map((v) => v.colour).filter(Boolean))];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
       <StoreHeader settings={settings} content={content} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Breadcrumb & Title */}
         <div className="mb-8">
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mb-2">
-            <Link href="/" className="hover:text-emerald-700">
+            <Link href="/" className="hover:text-emerald-800">
               Home
             </Link>
             <span>/</span>
@@ -104,14 +104,14 @@ export default async function ShopPage({ searchParams }) {
             {categorySlug && (
               <>
                 <span>/</span>
-                <span className="text-emerald-700 font-bold capitalize">
+                <span className="text-emerald-800 font-bold capitalize">
                   {categorySlug.replace(/-/g, ' ')}
                 </span>
               </>
             )}
           </div>
 
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="font-serif-luxury text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
             {categorySlug
               ? categories.find((c) => c.slug === categorySlug)?.name || 'Collection'
               : filterType === 'featured'
@@ -121,27 +121,27 @@ export default async function ShopPage({ searchParams }) {
               : 'All Outfits & Collections'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Showing <strong className="text-slate-800">{products.length}</strong> available piece(s)
+            Displaying <strong className="text-slate-900 font-bold">{products.length}</strong> available masterwork(s)
           </p>
         </div>
 
         {/* Layout with Filters Sidebar & Product Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           {/* Filters Sidebar */}
           <aside className="lg:col-span-1 space-y-6">
-            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-xs space-y-6">
+            <div className="bg-white rounded-3xl border border-stone-200/90 p-5 sm:p-6 shadow-sm space-y-6">
               {/* Header with Clear button */}
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center justify-between border-b border-stone-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <Filter size={16} className="text-emerald-600" />
-                  <h3 className="font-bold text-slate-900 text-sm">Filters</h3>
+                  <Filter size={16} className="text-emerald-800" />
+                  <h3 className="font-bold text-slate-900 text-sm">Filter Catalogue</h3>
                 </div>
                 {(categorySlug || searchQuery || sizeFilter || colourFilter || inStockOnly) && (
                   <Link
                     href="/shop"
                     className="text-xs text-rose-600 font-bold hover:underline"
                   >
-                    Clear All
+                    Reset All
                   </Link>
                 )}
               </div>
@@ -154,22 +154,22 @@ export default async function ShopPage({ searchParams }) {
                 <div className="space-y-1">
                   <Link
                     href="/shop"
-                    className={`block px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                    className={`block px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
                       !categorySlug
-                        ? 'bg-emerald-50 text-emerald-800 font-bold'
-                        : 'text-slate-600 hover:bg-slate-50'
+                        ? 'bg-emerald-50 text-emerald-900 font-extrabold border border-emerald-200'
+                        : 'text-slate-600 hover:bg-stone-50'
                     }`}
                   >
-                    All Categories
+                    All Outfits ({categories.length})
                   </Link>
                   {categories.map((cat) => (
                     <Link
                       key={cat.id}
                       href={`/shop?category=${cat.slug}${sort ? `&sort=${sort}` : ''}`}
-                      className={`block px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                      className={`block px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
                         categorySlug === cat.slug
-                          ? 'bg-emerald-50 text-emerald-800 font-bold'
-                          : 'text-slate-600 hover:bg-slate-50'
+                          ? 'bg-emerald-50 text-emerald-900 font-extrabold border border-emerald-200'
+                          : 'text-slate-600 hover:bg-stone-50'
                       }`}
                     >
                       {cat.name}
@@ -179,7 +179,7 @@ export default async function ShopPage({ searchParams }) {
               </div>
 
               {/* In-Stock Only Toggle */}
-              <div className="border-t border-slate-100 pt-4">
+              <div className="border-t border-stone-100 pt-4">
                 <Link
                   href={`/shop?${new URLSearchParams({
                     ...(categorySlug ? { category: categorySlug } : {}),
@@ -189,14 +189,14 @@ export default async function ShopPage({ searchParams }) {
                     ...(colourFilter ? { colour: colourFilter } : {}),
                     inStock: inStockOnly ? 'false' : 'true',
                   }).toString()}`}
-                  className="flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer"
+                  className="flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer p-1"
                 >
-                  <span>In-Stock Only</span>
+                  <span>In-Stock Items Only</span>
                   <div
-                    className={`w-5 h-5 rounded-md border flex items-center justify-center ${
+                    className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
                       inStockOnly
-                        ? 'bg-emerald-600 border-emerald-600 text-white'
-                        : 'border-slate-300 bg-white'
+                        ? 'bg-emerald-700 border-emerald-700 text-white'
+                        : 'border-stone-300 bg-white'
                     }`}
                   >
                     {inStockOnly && <Check size={13} />}
@@ -206,11 +206,11 @@ export default async function ShopPage({ searchParams }) {
 
               {/* Size Filter */}
               {availableSizes.length > 0 && (
-                <div className="border-t border-slate-100 pt-4 space-y-2">
+                <div className="border-t border-stone-100 pt-4 space-y-2">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                     Size
                   </h4>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {availableSizes.map((sz) => {
                       const isSelected = sizeFilter === sz;
                       const nextParams = new URLSearchParams({
@@ -228,8 +228,8 @@ export default async function ShopPage({ searchParams }) {
                           href={`/shop?${nextParams.toString()}`}
                           className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                             isSelected
-                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                              : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
                           }`}
                         >
                           {sz}
@@ -242,13 +242,14 @@ export default async function ShopPage({ searchParams }) {
 
               {/* Colour Filter */}
               {availableColours.length > 0 && (
-                <div className="border-t border-slate-100 pt-4 space-y-2">
+                <div className="border-t border-stone-100 pt-4 space-y-2">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Colour
+                    Colour Palette
                   </h4>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {availableColours.map((cl) => {
                       const isSelected = colourFilter === cl;
+                      const matchVar = allVariants.find((v) => v.colour === cl);
                       const nextParams = new URLSearchParams({
                         ...(categorySlug ? { category: categorySlug } : {}),
                         ...(searchQuery ? { search: searchQuery } : {}),
@@ -262,13 +263,17 @@ export default async function ShopPage({ searchParams }) {
                         <Link
                           key={cl}
                           href={`/shop?${nextParams.toString()}`}
-                          className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                             isSelected
-                              ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-slate-950 text-white border-slate-950 shadow-xs'
+                              : 'bg-white text-slate-700 border-stone-200 hover:bg-stone-100'
                           }`}
                         >
-                          {cl}
+                          <span
+                            className="w-3 h-3 rounded-full border border-black/20"
+                            style={{ backgroundColor: matchVar?.colourCode || '#1E293B' }}
+                          />
+                          <span>{cl}</span>
                         </Link>
                       );
                     })}
@@ -280,14 +285,14 @@ export default async function ShopPage({ searchParams }) {
 
           {/* Product Grid Area */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Top Toolbar: Sorting & Active Filters */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+            {/* Top Toolbar: Sorting */}
+            <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2 text-slate-600">
                 <ArrowUpDown size={15} />
                 <span className="font-bold">Sort By:</span>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {[
-                    { label: 'Newest', key: 'newest' },
+                    { label: 'Newest First', key: 'newest' },
                     { label: 'Price: Low to High', key: 'price_asc' },
                     { label: 'Price: High to Low', key: 'price_desc' },
                   ].map((s) => (
@@ -301,10 +306,10 @@ export default async function ShopPage({ searchParams }) {
                         ...(inStockOnly ? { inStock: 'true' } : {}),
                         sort: s.key,
                       }).toString()}`}
-                      className={`px-3 py-1 rounded-lg font-semibold transition-colors ${
+                      className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
                         sort === s.key
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          ? 'bg-slate-950 text-white'
+                          : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
                       }`}
                     >
                       {s.label}
@@ -316,34 +321,35 @@ export default async function ShopPage({ searchParams }) {
 
             {/* Products Grid */}
             {products.length === 0 ? (
-              <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <div className="bg-white rounded-3xl border border-stone-200 p-12 text-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mx-auto">
                   <ShoppingBag size={28} />
                 </div>
-                <h3 className="font-bold text-slate-800 text-base">No Outfits Matched Your Filter</h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                  Try clearing your search terms or selecting another category from the sidebar.
+                <h3 className="font-serif-luxury font-bold text-slate-900 text-lg">No Outfits Found</h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  Try clearing your search terms or picking another category from the sidebar.
                 </p>
                 <Link
                   href="/shop"
-                  className="inline-block px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700"
+                  className="inline-block px-5 py-2.5 bg-emerald-700 text-white rounded-xl text-xs font-bold hover:bg-emerald-800"
                 >
                   Reset All Filters
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
                 {products.map((prod) => {
                   const totalStock = prod.variants.reduce((s, v) => s + (v.stock || 0), 0);
                   const isOutOfStock = totalStock <= 0;
+                  const uniqueColours = [...new Set(prod.variants.map((v) => v.colourCode || '#1E293B'))].slice(0, 4);
 
                   return (
                     <Link
                       key={prod.id}
                       href={`/product/${prod.slug}`}
-                      className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                      className="group bg-white rounded-3xl overflow-hidden border border-stone-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
                     >
-                      <div className="aspect-[3/4] w-full overflow-hidden bg-slate-100 relative">
+                      <div className="aspect-[3/4] w-full overflow-hidden bg-stone-100 relative">
                         {prod.mainImage ? (
                           <img
                             src={prod.mainImage}
@@ -351,7 +357,7 @@ export default async function ShopPage({ searchParams }) {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                          <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
                             No Photo
                           </div>
                         )}
@@ -370,19 +376,37 @@ export default async function ShopPage({ searchParams }) {
                         </div>
                       </div>
 
-                      <div className="p-4 flex-1 flex flex-col justify-between">
+                      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                         <div>
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
                             {prod.category?.name}
                           </span>
-                          <h3 className="font-extrabold text-slate-900 text-sm mt-0.5 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
+                          <h3 className="font-serif-luxury font-bold text-slate-900 text-sm sm:text-base mt-1 line-clamp-2 leading-snug group-hover:text-emerald-800 transition-colors">
                             {prod.name}
                           </h3>
+
+                          {/* Colour dots indicator on card */}
+                          {uniqueColours.length > 0 && (
+                            <div className="flex items-center gap-1.5 mt-2">
+                              {uniqueColours.map((code, idx) => (
+                                <span
+                                  key={idx}
+                                  className="w-3 h-3 rounded-full border border-black/20"
+                                  style={{ backgroundColor: code }}
+                                />
+                              ))}
+                              {prod.variants.length > 4 && (
+                                <span className="text-[10px] text-slate-400 font-semibold">
+                                  +{prod.variants.length - 4} shades
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
 
-                        <div className="pt-3 mt-3 border-t border-slate-100 flex items-baseline justify-between">
+                        <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
                           <div>
-                            <span className="text-base font-black text-slate-900">
+                            <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
                               {formatPrice(prod.sellingPrice)}
                             </span>
                             {prod.originalPrice && prod.originalPrice > prod.sellingPrice && (
@@ -391,8 +415,8 @@ export default async function ShopPage({ searchParams }) {
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] font-bold text-emerald-600 group-hover:underline">
-                            Select Size
+                          <span className="text-[11px] font-bold text-emerald-700 group-hover:underline">
+                            Select Size &rarr;
                           </span>
                         </div>
                       </div>

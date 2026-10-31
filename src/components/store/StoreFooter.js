@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 
 export default function StoreFooter({ settings = null }) {
   const businessName = settings?.businessName || 'AR Fashion House';
@@ -10,28 +10,37 @@ export default function StoreFooter({ settings = null }) {
   return (
     <footer className="bg-[#0B132B] text-slate-400 text-xs border-t border-slate-800">
       {/* Upper Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand Col */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-white font-black text-lg tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-emerald-950 border border-amber-500/40 text-amber-300 font-serif-luxury font-bold text-base flex items-center justify-center">
               AR
             </div>
-            <span>{businessName}</span>
+            <div>
+              <span className="font-serif-luxury font-bold text-white text-base block tracking-tight">
+                {businessName}
+              </span>
+              <span className="text-[9px] uppercase tracking-widest text-emerald-400 font-bold block">
+                Haute Couture
+              </span>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Crafting premium luxury Panjabis, Banarasi silk sarees, and contemporary everyday clothing tailored for perfection across Bangladesh.
+          <p className="text-xs text-slate-400 leading-relaxed font-normal">
+            Handcrafted traditional & contemporary clothing tailored for perfection across Bangladesh.
           </p>
           <div className="pt-2 text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
             <ShieldCheck size={14} />
-            <span>100% Authentic Quality Fabrics Guaranteed</span>
+            <span>100% Quality Organic Fabrics</span>
           </div>
         </div>
 
         {/* Quick Links */}
         <div className="space-y-3">
-          <h4 className="text-white font-bold text-sm tracking-wide">Quick Navigation</h4>
-          <ul className="space-y-2 text-xs">
+          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
+            Quick Links
+          </h4>
+          <ul className="space-y-2 text-xs font-medium">
             <li>
               <Link href="/" className="hover:text-emerald-400 transition-colors">
                 Home
@@ -39,7 +48,7 @@ export default function StoreFooter({ settings = null }) {
             </li>
             <li>
               <Link href="/shop" className="hover:text-emerald-400 transition-colors">
-                Shop All Collections
+                Complete Catalog
               </Link>
             </li>
             <li>
@@ -54,7 +63,7 @@ export default function StoreFooter({ settings = null }) {
             </li>
             <li>
               <Link href="/#about" className="hover:text-emerald-400 transition-colors">
-                About AR Fashion House
+                Brand Heritage
               </Link>
             </li>
           </ul>
@@ -62,8 +71,10 @@ export default function StoreFooter({ settings = null }) {
 
         {/* Store Policies */}
         <div className="space-y-3">
-          <h4 className="text-white font-bold text-sm tracking-wide">Customer Support & Policies</h4>
-          <ul className="space-y-2 text-xs">
+          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
+            Store Policies
+          </h4>
+          <ul className="space-y-2 text-xs font-medium">
             <li>
               <Link href="/policies/shipping-policy" className="hover:text-emerald-400 transition-colors">
                 Shipping & Nationwide Delivery
@@ -71,12 +82,12 @@ export default function StoreFooter({ settings = null }) {
             </li>
             <li>
               <Link href="/policies/return-policy" className="hover:text-emerald-400 transition-colors">
-                Return & Size Exchange Policy
+                Return & Size Exchange
               </Link>
             </li>
             <li>
               <Link href="/policies/privacy-policy" className="hover:text-emerald-400 transition-colors">
-                Privacy & Data Protection
+                Privacy Policy
               </Link>
             </li>
             <li>
@@ -89,13 +100,15 @@ export default function StoreFooter({ settings = null }) {
 
         {/* Contact info & WhatsApp order */}
         <div className="space-y-3">
-          <h4 className="text-white font-bold text-sm tracking-wide">Contact & Order Helpline</h4>
+          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
+            Order Helpline
+          </h4>
           <div className="space-y-2.5 text-xs">
             <div className="flex items-start gap-2.5">
               <Phone size={14} className="text-emerald-400 shrink-0 mt-0.5" />
               <div>
                 <span className="block text-slate-200 font-mono font-bold">{primaryPhone}</span>
-                <span className="text-[10px] text-slate-400">Available 10 AM – 10 PM daily</span>
+                <span className="text-[10px] text-slate-400">WhatsApp & Direct Calls (10 AM - 10 PM)</span>
               </div>
             </div>
 
