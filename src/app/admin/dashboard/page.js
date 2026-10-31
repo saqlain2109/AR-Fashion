@@ -33,6 +33,13 @@ export default function AdminDashboardPage() {
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const res = await fetch('/api/dashboard/stats', { headers, credentials: 'include' });
+      if (res.status === 401) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('ar_admin_token');
+          window.location.href = '/admin/login';
+        }
+        return;
+      }
       const data = await res.json();
       if (data.success && data.stats) {
         setStats(data.stats);
