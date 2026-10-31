@@ -40,7 +40,7 @@ Fill in the following fields:
 - **Runtime:** `Node`
 - **Build Command:**
   ```bash
-  npm install && npx prisma db push && npm run build
+  npm install --include=dev && npx prisma db push && npm run build
   ```
 - **Start Command:**
   ```bash
