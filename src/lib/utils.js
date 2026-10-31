@@ -5,9 +5,16 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-function formatPrice(amount, currencySymbol = '৳') {
-  if (amount === null || amount === undefined || isNaN(amount)) return `${currencySymbol}0`;
-  return `${currencySymbol}${Number(amount).toLocaleString('en-US')}`;
+function formatPrice(amount, currencySymbol = null) {
+  let symbol = currencySymbol;
+  if (!symbol && typeof window !== 'undefined') {
+    symbol = window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol');
+  }
+  if (!symbol) {
+    symbol = '₹';
+  }
+  if (amount === null || amount === undefined || isNaN(amount)) return `${symbol}0`;
+  return `${symbol}${Number(amount).toLocaleString('en-US')}`;
 }
 
 function formatDate(dateInput) {

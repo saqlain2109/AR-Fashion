@@ -28,6 +28,9 @@ export default function AdminLoginPage() {
       }
 
       // Successful login
+      if (data.token && typeof window !== 'undefined') {
+        localStorage.setItem('ar_admin_token', data.token);
+      }
       router.push('/admin/dashboard');
       router.refresh();
     } catch (err) {

@@ -56,6 +56,7 @@ model ProductImage {
   productId    String
   product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   url          String
+  colour       String?  // Associated colour tag (e.g. "Black", "Maroon")
   displayOrder Int      @default(0)
   isMain       Boolean  @default(false)
   createdAt    DateTime @default(now())
@@ -82,7 +83,7 @@ model Order {
   customerName    String
   customerPhone   String
   deliveryAddress String
-  city            String
+  city            String?     @default("")
   postalCode      String?
   notes           String?
   internalNotes   String?
@@ -115,20 +116,20 @@ model StoreSettings {
   id                    String   @id @default("default")
   businessName          String   @default("AR Fashion House")
   storeLogo             String?
-  primaryPhone          String   @default("+8801700000000")
-  secondaryPhone        String?
+  primaryPhone          String   @default("+917304396709")
+  secondaryPhone        String?  @default("+918080010107")
   defaultRecipient      String   @default("primary")
   businessEmail         String   @default("contact@arfashionhouse.com")
   shippingCharge        Float    @default(100)
   freeShippingThreshold Float?   @default(2000)
-  currency              String   @default("BDT")
-  currencySymbol        String   @default("৳")
-  storeAnnouncement     String?  @default("Special Offer: Free delivery on orders over ৳2000 across the country!")
+  currency              String   @default("INR")
+  currencySymbol        String   @default("₹")
+  storeAnnouncement     String?  @default("Special Festive Offer: FREE Delivery on orders over ₹2000 across India!")
   announcementActive    Boolean  @default(true)
-  facebookUrl           String?  @default("https://facebook.com")
-  instagramUrl          String?  @default("https://instagram.com")
-  whatsappUrl           String?  @default("https://wa.me/8801700000000")
-  address               String?  @default("House 12, Road 4, Sector 7, Uttara, Dhaka, Bangladesh")
+  facebookUrl           String?
+  instagramUrl          String?
+  whatsappUrl           String?  @default("https://wa.me/917304396709")
+  address               String?
   updatedAt             DateTime @updatedAt
 }
 
@@ -141,7 +142,7 @@ model WebsiteContent {
   heroPrimaryBtnLink  String   @default("/shop?filter=new")
   heroSecondaryBtnText String  @default("Explore Categories")
   heroSecondaryBtnLink String  @default("/#categories")
-  announcementBar     String?  @default("🔥 Exclusive Summer & Eid Collection 2026 is LIVE! Order easily via WhatsApp.")
+  announcementBar     String?  @default("✨ Special Festive Offer: FREE Delivery on orders over ₹2000 across India!")
   brandStoryTitle     String   @default("Authentic Craftsmanship & Modern Elegance")
   brandStoryText      String   @default("At AR Fashion House, we blend heritage needlework with contemporary silhouettes. From everyday comfort to bespoke celebratory attire, every stitch represents premium craftsmanship, finest organic fabrics, and unmatched attention to detail.")
   brandStoryImage     String?  @default("/uploads/brand-story.jpg")

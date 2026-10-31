@@ -24,6 +24,9 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState('');
   const [inspectProduct, setInspectProduct] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState(
+    (typeof window !== 'undefined' && (window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol'))) || '₹'
+  );
 
   const fetchProducts = async () => {
     try {
@@ -32,6 +35,12 @@ export default function AdminProductsPage() {
       const data = await res.json();
       if (data.success && data.products) {
         setProducts(data.products);
+      }
+
+      const sRes = await fetch('/api/settings');
+      const sData = await sRes.json();
+      if (sData.success && sData.settings?.currencySymbol) {
+        setCurrencySymbol(sData.settings.currencySymbol);
       }
     } catch (e) {
       console.error(e);
@@ -150,10 +159,10 @@ export default function AdminProductsPage() {
       sortable: true,
       render: (val, row) => (
         <div>
-          <span className="font-extrabold text-slate-900">{formatPrice(val)}</span>
+          <span className="font-extrabold text-slate-900">{formatPrice(val, currencySymbol)}</span>
           {row.originalPrice && (
             <span className="text-[11px] text-slate-400 line-through ml-1.5">
-              {formatPrice(row.originalPrice)}
+              {formatPrice(row.originalPrice, currencySymbol)}
             </span>
           )}
         </div>
@@ -302,7 +311,7 @@ export default function AdminProductsPage() {
                       Category: <strong>{inspectProduct.category?.name}</strong>
                     </p>
                     <p className="text-base font-extrabold text-emerald-700 mt-1">
-                      {formatPrice(inspectProduct.sellingPrice)}
+                      {formatPrice(inspectProduct.sellingPrice, currencySymbol)}
                     </p>
                   </div>
                 </div>

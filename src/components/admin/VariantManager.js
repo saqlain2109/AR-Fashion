@@ -21,6 +21,7 @@ export default function VariantManager({
   onChange, // (updatedVariants) => void
   basePrice = 0,
   baseSku = '',
+  currencySymbol = '₹',
 }) {
   // Matrix Generator helper state
   const [selectedColours, setSelectedColours] = useState([]);
@@ -292,7 +293,7 @@ export default function VariantManager({
                     <th className="py-2.5 px-3">Size</th>
                     <th className="py-2.5 px-3 w-28">Stock Qty</th>
                     <th className="py-2.5 px-3 w-32">
-                      Variant Price (৳)
+                      Variant Price ({currencySymbol})
                       <span className="text-[10px] text-slate-400 font-normal block normal-case">Optional override</span>
                     </th>
                     <th className="py-2.5 px-3 w-36">SKU Code</th>
@@ -359,7 +360,7 @@ export default function VariantManager({
                           onChange={(e) =>
                             updateVariant(idx, 'price', e.target.value === '' ? null : parseFloat(e.target.value))
                           }
-                          placeholder={`Base: ৳${basePrice || 0}`}
+                          placeholder={`Base: ${currencySymbol}${basePrice || 0}`}
                           className="w-28 px-2 py-1 text-xs border border-slate-200 rounded-lg"
                         />
                       </td>

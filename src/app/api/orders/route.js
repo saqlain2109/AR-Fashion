@@ -66,18 +66,17 @@ export async function POST(req) {
     if (!deliveryAddress || !deliveryAddress.trim()) {
       return NextResponse.json({ error: 'Delivery Address is required.' }, { status: 400 });
     }
-    if (!city || !city.trim()) {
-      return NextResponse.json({ error: 'Delivery City is required.' }, { status: 400 });
-    }
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty. Please add items before placing order.' }, { status: 400 });
     }
+
+    const cleanCity = (city && city.trim()) || '';
 
     // Fetch store settings for shipping charges & phone
     const settings = await prisma.storeSettings.findUnique({ where: { id: 'default' } });
     const targetPhone = (settings?.defaultRecipient === 'secondary' && settings?.secondaryPhone)
       ? settings.secondaryPhone
-      : (settings?.primaryPhone || '+8801700000000');
+      : (settings?.primaryPhone || '+917304396709');
 
     // Clean target WhatsApp number (digits only for wa.me URL)
     const cleanPhoneDigits = targetPhone.replace(/[^0-9]/g, '');
@@ -150,7 +149,7 @@ export async function POST(req) {
           customerName: customerName.trim(),
           customerPhone: customerPhone.trim(),
           deliveryAddress: deliveryAddress.trim(),
-          city: city.trim(),
+          city: cleanCity,
           postalCode: postalCode?.trim() || null,
           notes: notes?.trim() || null,
           subtotal,
@@ -167,7 +166,7 @@ export async function POST(req) {
       return { order, subtotal, shippingCharge, total };
     });
 
-    const currencySym = settings?.currencySymbol || '৳';
+    const currencySym = settings?.currencySymbol || '₹';
 
     // Format professional WhatsApp direct order message
     let waMessage = `*NEW ORDER - AR FASHION HOUSE*\n`;
@@ -177,9 +176,16 @@ export async function POST(req) {
     waMessage += `*CUSTOMER DETAILS:*\n`;
     waMessage += `Name: ${result.order.customerName}\n`;
     waMessage += `Phone: ${result.order.customerPhone}\n`;
-    waMessage += `Address: ${result.order.deliveryAddress}, ${result.order.city}\n`;
+    waMessage += `Delivery Address: ${result.order.deliveryAddress}`;
+    if (result.order.city && result.order.city.trim()) {
+      waMessage += `, ${result.order.city}`;
+    }
+    if (result.order.postalCode) {
+      waMessage += ` (PIN: ${result.order.postalCode})`;
+    }
+    waMessage += `\n`;
     if (result.order.notes) {
-      waMessage += `Notes: ${result.order.notes}\n`;
+      waMessage += `Special Notes: ${result.order.notes}\n`;
     }
     waMessage += `\n*ORDER ITEMS:*\n`;
     result.order.items.forEach((item, idx) => {

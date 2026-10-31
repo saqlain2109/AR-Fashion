@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function ShopPage({ searchParams }) {
@@ -33,6 +34,8 @@ export default async function ShopPage({ searchParams }) {
       orderBy: { displayOrder: 'asc' },
     }),
   ]);
+
+  const currencySymbol = settings?.currencySymbol || '₹';
 
   // Build Prisma where
   const where = {
@@ -76,6 +79,7 @@ export default async function ShopPage({ searchParams }) {
     include: {
       category: true,
       variants: true,
+      images: true,
     },
   });
 
@@ -90,7 +94,7 @@ export default async function ShopPage({ searchParams }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
-      <StoreHeader settings={settings} content={content} />
+      <StoreHeader categories={categories} settings={settings} content={content} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Breadcrumb & Title */}
@@ -350,17 +354,23 @@ export default async function ShopPage({ searchParams }) {
                       className="group bg-white rounded-3xl overflow-hidden border border-stone-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
                     >
                       <div className="aspect-[3/4] w-full overflow-hidden bg-stone-100 relative">
-                        {prod.mainImage ? (
-                          <img
-                            src={prod.mainImage}
-                            alt={prod.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
-                            No Photo
-                          </div>
-                        )}
+                        {(() => {
+                          const colourSpecific = colourFilter
+                            ? prod.images?.find((img) => img.colour && img.colour.toLowerCase() === colourFilter.toLowerCase())?.url
+                            : null;
+                          const cardImage = colourSpecific || prod.mainImage;
+                          return cardImage ? (
+                            <img
+                              src={cardImage}
+                              alt={prod.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
+                              No Photo
+                            </div>
+                          );
+                        })()}
 
                         <div className="absolute top-3 left-3 flex flex-col gap-1">
                           {prod.isNewArrival && (
@@ -407,11 +417,11 @@ export default async function ShopPage({ searchParams }) {
                         <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
                           <div>
                             <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
-                              {formatPrice(prod.sellingPrice)}
+                              {formatPrice(prod.sellingPrice, currencySymbol)}
                             </span>
                             {prod.originalPrice && prod.originalPrice > prod.sellingPrice && (
                               <span className="text-xs text-slate-400 line-through ml-1.5">
-                                {formatPrice(prod.originalPrice)}
+                                {formatPrice(prod.originalPrice, currencySymbol)}
                               </span>
                             )}
                           </div>

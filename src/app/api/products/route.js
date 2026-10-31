@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -175,11 +177,14 @@ export async function POST(req) {
       // Insert product photos
       if (images && images.length > 0) {
         for (let i = 0; i < images.length; i++) {
-          const imgUrl = typeof images[i] === 'string' ? images[i] : images[i].url;
+          const item = images[i];
+          const imgUrl = typeof item === 'string' ? item : item.url;
+          const imgColour = typeof item === 'object' && item.colour ? item.colour.trim() : null;
           await tx.productImage.create({
             data: {
               productId: created.id,
               url: imgUrl,
+              colour: imgColour,
               displayOrder: i,
               isMain: imgUrl === primaryImg || i === 0,
             },

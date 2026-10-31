@@ -16,20 +16,27 @@ import {
   Truck,
 } from 'lucide-react';
 
-export default function StoreHeader({ settings = null, content = null }) {
-  const { totalCount, setDrawerOpen } = useCart();
+export default function StoreHeader({ settings = null, content = null, categories: initialCategories = null }) {
+  const { totalCount, setDrawerOpen, settings: contextSettings } = useCart();
+  const activeSettings = settings || contextSettings;
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(initialCategories || []);
   const [catDropdownOpen, setCatDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    if (initialCategories && initialCategories.length > 0) {
+      setCategories(initialCategories);
+    }
+  }, [initialCategories]);
+
+  useEffect(() => {
     async function loadNavCats() {
       try {
-        const res = await fetch('/api/categories');
+        const res = await fetch('/api/categories?t=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
         if (data.success && data.categories) {
           setCategories(data.categories);
@@ -39,6 +46,12 @@ export default function StoreHeader({ settings = null, content = null }) {
       }
     }
     loadNavCats();
+
+    const handleCatsUpdated = () => {
+      loadNavCats();
+    };
+    window.addEventListener('categories_updated', handleCatsUpdated);
+    return () => window.removeEventListener('categories_updated', handleCatsUpdated);
   }, []);
 
   // Close dropdown on click outside
@@ -61,12 +74,15 @@ export default function StoreHeader({ settings = null, content = null }) {
     }
   };
 
-  const rawAnnouncement = settings?.announcementActive && settings?.storeAnnouncement
-    ? settings.storeAnnouncement
-    : (content?.announcementBar || 'Special Festive Offer: FREE Delivery all across Bangladesh on orders over ৳2000!');
-  const announcement = rawAnnouncement ? rawAnnouncement.replace(/\uFFFD/g, '৳') : '';
+  const currencySym = activeSettings?.currencySymbol || '₹';
+  const rawAnnouncement = activeSettings?.announcementActive && activeSettings?.storeAnnouncement
+    ? activeSettings.storeAnnouncement
+    : (content?.announcementBar || `Special Festive Offer: FREE Delivery on orders over ${currencySym}2000 across India!`);
+  const announcement = rawAnnouncement
+    ? rawAnnouncement.replace(/[\uFFFD\?](?=\d)/g, currencySym).replace(/\uFFFD/g, currencySym)
+    : '';
 
-  const waPhone = settings?.primaryPhone || '+8801700000000';
+  const waPhone = activeSettings?.primaryPhone || '+917304396709';
   const cleanPhone = waPhone.replace(/[^0-9]/g, '');
 
   return (
@@ -82,7 +98,7 @@ export default function StoreHeader({ settings = null, content = null }) {
           <div className="hidden md:flex items-center gap-5 shrink-0 text-slate-400 font-medium text-[11px]">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <Truck size={13} />
-              <span>Nationwide Home Delivery</span>
+              <span>All-India Express Delivery</span>
             </span>
             <span className="text-slate-600">|</span>
             <a

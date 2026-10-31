@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function HomePage() {
@@ -41,12 +42,13 @@ export default async function HomePage() {
     }),
   ]);
 
-  const waPhone = settings?.primaryPhone || '+8801700000000';
+  const currencySymbol = settings?.currencySymbol || '₹';
+  const waPhone = settings?.primaryPhone || '+917304396709';
   const cleanPhone = waPhone.replace(/[^0-9]/g, '');
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
-      <StoreHeader settings={settings} content={content} />
+      <StoreHeader categories={categories} settings={settings} content={content} />
 
       <main className="flex-1">
         {/* 1. High-Fashion Hero Showcase Section */}
@@ -112,7 +114,9 @@ export default async function HomePage() {
               </div>
               <div>
                 <h4 className="text-xs sm:text-sm font-bold text-slate-900">Nationwide Express Delivery</h4>
-                <p className="text-[11px] text-slate-500">Free delivery on orders over ৳2000</p>
+                <p className="text-[11px] text-slate-500">
+                  Free delivery on orders over {formatPrice(settings?.freeShippingThreshold ?? 2000, currencySymbol)}
+                </p>
               </div>
             </div>
 
@@ -297,11 +301,11 @@ export default async function HomePage() {
                         <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
                           <div>
                             <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
-                              {formatPrice(prod.sellingPrice)}
+                              {formatPrice(prod.sellingPrice, currencySymbol)}
                             </span>
                             {prod.originalPrice && prod.originalPrice > prod.sellingPrice && (
                               <span className="text-xs text-slate-400 line-through ml-1.5">
-                                {formatPrice(prod.originalPrice)}
+                                {formatPrice(prod.originalPrice, currencySymbol)}
                               </span>
                             )}
                           </div>
@@ -366,7 +370,7 @@ export default async function HomePage() {
                     </div>
                     <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
                       <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
-                        {formatPrice(prod.sellingPrice)}
+                        {formatPrice(prod.sellingPrice, currencySymbol)}
                       </span>
                       <span className="text-[11px] font-bold text-emerald-700 group-hover:underline">
                         Order &rarr;

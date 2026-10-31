@@ -118,9 +118,14 @@ export default function AdminCategoriesPage() {
       const url = editingCategory ? `/api/categories/${editingCategory.id}` : '/api/categories';
       const method = editingCategory ? 'PUT' : 'POST';
 
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -132,6 +137,9 @@ export default function AdminCategoriesPage() {
       showToast(editingCategory ? 'Category updated successfully!' : 'Category created successfully!');
       setModalOpen(false);
       fetchCategories();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('categories_updated'));
+      }
     } catch (err) {
       setModalError(err.message || 'Error occurred');
     } finally {
@@ -146,6 +154,9 @@ export default function AdminCategoriesPage() {
       if (data.success) {
         showToast('Category deleted successfully');
         fetchCategories();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('categories_updated'));
+        }
       } else {
         alert(data.error || 'Cannot delete category');
       }
@@ -165,6 +176,9 @@ export default function AdminCategoriesPage() {
       if (data.success) {
         showToast(`Category status updated`);
         fetchCategories();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('categories_updated'));
+        }
       }
     } catch (e) {
       alert('Failed to update status');

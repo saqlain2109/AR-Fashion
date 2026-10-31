@@ -72,9 +72,14 @@ export default function AdminPoliciesPage() {
     setErrorMessage('');
 
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch('/api/policies', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           id: activePolicyObj.id,
           title: currentTitle,

@@ -8,16 +8,16 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, Truck, ShieldCheck } from
 import { formatPrice } from '@/lib/utils';
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart, clearCart, subtotal, totalCount } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart, subtotal, totalCount, settings, currencySymbol, formatPrice } = useCart();
   const router = useRouter();
 
-  const freeThreshold = 2000;
+  const freeThreshold = settings?.freeShippingThreshold || 2000;
   const isFreeDelivery = subtotal >= freeThreshold;
   const progressPercent = Math.min(100, Math.round((subtotal / freeThreshold) * 100));
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <StoreHeader />
+      <StoreHeader settings={settings} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="mb-6">
@@ -169,7 +169,9 @@ export default function CartPage() {
                 <div className="flex justify-between">
                   <span>Estimated Delivery:</span>
                   <span className="font-bold text-slate-900">
-                    {isFreeDelivery ? 'FREE' : '৳100 (Inside) / ৳150 (Outside)'}
+                    {isFreeDelivery
+                      ? 'FREE'
+                      : `${formatPrice(settings?.shippingCharge || 100)} (Inside) / ${formatPrice((settings?.shippingCharge || 100) + 50)} (Outside)`}
                   </span>
                 </div>
                 <div className="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
@@ -193,7 +195,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Truck size={14} className="text-emerald-600 shrink-0" />
-                  <span>Cash on Delivery available across all 64 districts.</span>
+                  <span>Express delivery & Cash on Delivery available across India.</span>
                 </div>
               </div>
             </div>
@@ -201,7 +203,7 @@ export default function CartPage() {
         )}
       </main>
 
-      <StoreFooter />
+      <StoreFooter settings={settings} />
     </div>
   );
 }

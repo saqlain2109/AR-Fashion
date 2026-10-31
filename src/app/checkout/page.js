@@ -18,14 +18,13 @@ import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { cart, subtotal, totalCount, clearCart } = useCart();
+  const { cart, subtotal, totalCount, clearCart, settings, currencySymbol, formatPrice } = useCart();
   const router = useRouter();
 
   // Delivery Form State
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [city, setCity] = useState('Dhaka');
   const [postalCode, setPostalCode] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -33,11 +32,10 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Shipping calculation
-  const freeThreshold = 2000;
+  // Shipping calculation (Flat All-India Express Delivery or Free Shipping above threshold)
+  const freeThreshold = settings?.freeShippingThreshold ?? 2000;
   const isFreeShipping = subtotal >= freeThreshold;
-  const baseShipping = city.toLowerCase() === 'dhaka' ? 100 : 150;
-  const shippingCharge = isFreeShipping ? 0 : baseShipping;
+  const shippingCharge = isFreeShipping ? 0 : (settings?.shippingCharge ?? 100);
   const grandTotal = subtotal + shippingCharge;
 
   const handlePlaceOrder = async (e) => {
@@ -71,7 +69,7 @@ export default function CheckoutPage() {
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
         deliveryAddress: deliveryAddress.trim(),
-        city: city.trim(),
+        city: '',
         postalCode: postalCode.trim() || null,
         notes: notes.trim() || null,
         items: cart.map((item) => ({
@@ -116,7 +114,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
-      <StoreHeader />
+      <StoreHeader settings={settings} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="mb-8">
@@ -167,7 +165,7 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Mohammad Tanvir Hasan"
+                      placeholder="e.g. Rahul Sharma"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
@@ -181,7 +179,7 @@ export default function CheckoutPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="e.g. 01711223344"
+                      placeholder="e.g. 7304396709 or +91 9876543210"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
@@ -193,44 +191,23 @@ export default function CheckoutPage() {
 
                   <div className="space-y-1.5 md:col-span-2">
                     <label className="font-bold text-slate-700">
-                      Delivery Address & Street Details <span className="text-rose-500">*</span>
+                      Full Delivery Address (Flat/House No, Building, Street, Area, Landmark) <span className="text-rose-500">*</span>
                     </label>
                     <textarea
-                      rows={2}
+                      rows={3}
                       required
-                      placeholder="House #, Road #, Area / Landmark..."
+                      placeholder="e.g. Flat 402, Sunshine Heights, MG Road, Near City Mall, Landmark: Next to HDFC Bank..."
                       value={deliveryAddress}
                       onChange={(e) => setDeliveryAddress(e.target.value)}
                       className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="font-bold text-slate-700">
-                      City / Region <span className="text-rose-500">*</span>
-                    </label>
-                    <select
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-semibold"
-                    >
-                      <option value="Dhaka">Dhaka City (Inside - ৳100)</option>
-                      <option value="Chittagong">Chittagong (Nationwide - ৳150)</option>
-                      <option value="Sylhet">Sylhet (Nationwide - ৳150)</option>
-                      <option value="Rajshahi">Rajshahi (Nationwide - ৳150)</option>
-                      <option value="Khulna">Khulna (Nationwide - ৳150)</option>
-                      <option value="Barisal">Barisal (Nationwide - ৳150)</option>
-                      <option value="Rangpur">Rangpur (Nationwide - ৳150)</option>
-                      <option value="Mymensingh">Mymensingh (Nationwide - ৳150)</option>
-                      <option value="Other District">Other District (Nationwide - ৳150)</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="font-bold text-slate-700">Postal Code (Optional)</label>
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="font-bold text-slate-700">Postal / PIN Code (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. 1213"
+                      placeholder="e.g. 400001 or 110001"
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
                       className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono"
@@ -294,9 +271,11 @@ export default function CheckoutPage() {
                   <span>Delivery Charge:</span>
                   <span className="font-bold text-slate-900">
                     {isFreeShipping ? (
-                      <span className="text-emerald-700 uppercase font-black">Free (Over ৳2000)</span>
+                      <span className="text-emerald-700 uppercase font-black">
+                        Free (Over {formatPrice(freeThreshold, currencySymbol)})
+                      </span>
                     ) : (
-                      formatPrice(shippingCharge)
+                      formatPrice(shippingCharge, currencySymbol)
                     )}
                   </span>
                 </div>
@@ -340,7 +319,7 @@ export default function CheckoutPage() {
         )}
       </main>
 
-      <StoreFooter />
+      <StoreFooter settings={settings} />
     </div>
   );
 }

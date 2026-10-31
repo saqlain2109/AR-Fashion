@@ -75,7 +75,7 @@ async function main() {
   }
   console.log(`Seeded ${categoriesData.length} categories.`);
 
-  // 3. Products with Variants and Photos
+  // 3. Products with Variants and Colour-Specific Photos
   const sampleProducts = [
     {
       name: "Royal Zari Embroidered Silk Panjabi",
@@ -88,10 +88,18 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: true,
       isNewArrival: true,
-      mainImage: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
+        // Midnight Black photos
+        { url: "https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?auto=format&fit=crop&w=900&q=80", colour: "Midnight Black" },
+        { url: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80", colour: "Midnight Black" },
+        { url: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=900&q=80", colour: "Midnight Black" },
+        // Royal Maroon photos
+        { url: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=80", colour: "Royal Maroon" },
+        { url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80", colour: "Royal Maroon" },
+        // Ivory White photos
+        { url: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80", colour: "Ivory White" },
+        { url: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&w=900&q=80", colour: "Ivory White" },
       ],
       variants: [
         { colour: "Midnight Black", colourCode: "#111827", size: "M (40)", stock: 12, price: 3850 },
@@ -103,7 +111,7 @@ async function main() {
       ],
     },
     {
-      name: "Handwoven Banarasi Pure Silk Saree",
+      name: "Handwoven Banarasi Pure Katan Silk Saree",
       slug: "handwoven-banarasi-pure-silk-saree",
       description: "Authentic heritage Banarasi saree featuring intricate floral meenakari motifs across the body and heavy golden pallu. Comes with an unstitched matching designer blouse piece.",
       categorySlug: "womens-sarees-anarkalis",
@@ -113,10 +121,17 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: true,
       isNewArrival: true,
-      mainImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+        // Ruby Crimson photos
+        { url: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80", colour: "Ruby Crimson" },
+        { url: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=80", colour: "Ruby Crimson" },
+        // Emerald Green photos
+        { url: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=900&q=80", colour: "Emerald Green" },
+        { url: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=900&q=80", colour: "Emerald Green" },
+        // Deep Peacock Blue photos
+        { url: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=900&q=80", colour: "Deep Peacock Blue" },
+        { url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80", colour: "Deep Peacock Blue" },
       ],
       variants: [
         { colour: "Ruby Crimson", colourCode: "#BE123C", size: "Free Size", stock: 8, price: 7200 },
@@ -125,7 +140,7 @@ async function main() {
       ],
     },
     {
-      name: "Premium Linen Slim-Fit Casual Shirt",
+      name: "Premium European Flax Linen Casual Shirt",
       slug: "premium-linen-slim-fit-casual-shirt",
       description: "Breathable pure European flax linen tailored with curved hem, spread collar, and mother-of-pearl buttons. Ideal for warm weather gatherings, casual meetings, and weekend outings.",
       categorySlug: "casual-shirts-polos",
@@ -135,9 +150,17 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: false,
       isNewArrival: true,
-      mainImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+        // Sky Blue photos
+        { url: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80", colour: "Sky Blue" },
+        { url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80", colour: "Sky Blue" },
+        // Crisp White photos
+        { url: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=900&q=80", colour: "Crisp White" },
+        { url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80", colour: "Crisp White" },
+        // Olive Green photos
+        { url: "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80", colour: "Olive Green" },
+        { url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80", colour: "Olive Green" },
       ],
       variants: [
         { colour: "Sky Blue", colourCode: "#38BDF8", size: "M", stock: 15, price: 1850 },
@@ -145,7 +168,7 @@ async function main() {
         { colour: "Sky Blue", colourCode: "#38BDF8", size: "XL", stock: 10, price: 1850 },
         { colour: "Crisp White", colourCode: "#FFFFFF", size: "M", stock: 25, price: 1850 },
         { colour: "Crisp White", colourCode: "#FFFFFF", size: "L", stock: 30, price: 1850 },
-        { colour: "Olive Green", colourCode: "#4D7C0F", size: "L", stock: 0, price: 1850 }, // Out of stock example
+        { colour: "Olive Green", colourCode: "#4D7C0F", size: "L", stock: 8, price: 1850 },
       ],
     },
     {
@@ -159,9 +182,14 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: true,
       isNewArrival: false,
-      mainImage: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+        // Rose Blush photos
+        { url: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=900&q=80", colour: "Rose Blush" },
+        { url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80", colour: "Rose Blush" },
+        // Teal Green photos
+        { url: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=900&q=80", colour: "Teal Green" },
+        { url: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=900&q=80", colour: "Teal Green" },
       ],
       variants: [
         { colour: "Rose Blush", colourCode: "#FB7185", size: "M (38)", stock: 6, price: 4600 },
@@ -181,9 +209,14 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: false,
       isNewArrival: true,
-      mainImage: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=800&q=80",
+        // Navy Blue photos
+        { url: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=900&q=80", colour: "Navy Blue" },
+        { url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80", colour: "Navy Blue" },
+        // Burgundy photos
+        { url: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=80", colour: "Burgundy" },
+        { url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80", colour: "Burgundy" },
       ],
       variants: [
         { colour: "Navy Blue", colourCode: "#1E3A8A", size: "M", stock: 22, price: 1250 },
@@ -203,9 +236,14 @@ async function main() {
       status: "PUBLISHED",
       isFeatured: false,
       isNewArrival: false,
-      mainImage: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=800&q=80",
+        // Mustard Gold photos
+        { url: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=900&q=80", colour: "Mustard Gold" },
+        { url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80", colour: "Mustard Gold" },
+        // Royal Blue photos
+        { url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=900&q=80", colour: "Royal Blue" },
+        { url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80", colour: "Royal Blue" },
       ],
       variants: [
         { colour: "Mustard Gold", colourCode: "#CA8A04", size: "Age 4-5Y", stock: 10, price: 1650 },
@@ -224,9 +262,9 @@ async function main() {
       status: "DRAFT", // DRAFT for testing requirement that drafts are hidden from storefront
       isFeatured: false,
       isNewArrival: false,
-      mainImage: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=800&q=80",
+      mainImage: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=900&q=80",
       images: [
-        "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=800&q=80",
+        { url: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=900&q=80", colour: "Charcoal Grey" },
       ],
       variants: [
         { colour: "Charcoal Grey", colourCode: "#374151", size: "Standard", stock: 3, price: 12500 },
@@ -273,10 +311,14 @@ async function main() {
 
     // insert images
     for (let i = 0; i < p.images.length; i++) {
+      const img = p.images[i];
+      const imgUrl = typeof img === 'string' ? img : img.url;
+      const imgColour = typeof img === 'object' ? img.colour : null;
       await prisma.productImage.create({
         data: {
           productId: createdProd.id,
-          url: p.images[i],
+          url: imgUrl,
+          colour: imgColour,
           displayOrder: i,
           isMain: i === 0,
         },
@@ -304,13 +346,13 @@ async function main() {
   const sampleOrders = [
     {
       orderNumber: "AR-20261028-1001",
-      customerName: "Mohammad Tanvir Hasan",
-      customerPhone: "+8801711223344",
-      deliveryAddress: "Flat 4B, Road 18, Block D, Banani",
-      city: "Dhaka",
-      postalCode: "1213",
-      notes: "Please call before delivery. Urgent evening delivery preferred.",
-      internalNotes: "Customer requested evening slot after 6 PM. Assigned to courier express.",
+      customerName: "Aarav Sharma",
+      customerPhone: "+919820011223",
+      deliveryAddress: "Flat 4B, Sunshine Towers, Senapati Bapat Marg, Lower Parel",
+      city: "Mumbai",
+      postalCode: "400013",
+      notes: "Please call before delivery. Evening delivery preferred.",
+      internalNotes: "Customer requested evening slot after 6 PM. Assigned to Blue Dart Express.",
       subtotal: 3850,
       shippingCharge: 100,
       total: 3950,
@@ -331,11 +373,11 @@ async function main() {
     },
     {
       orderNumber: "AR-20261029-1002",
-      customerName: "Dr. Farhana Yasmin",
-      customerPhone: "+8801822334455",
-      deliveryAddress: "House 24, Road 7, Dhanmondi R/A",
-      city: "Dhaka",
-      postalCode: "1205",
+      customerName: "Dr. Ananya Iyer",
+      customerPhone: "+919876543210",
+      deliveryAddress: "Villa 24, Palm Meadows, Whitefield",
+      city: "Bengaluru",
+      postalCode: "560066",
       notes: "Gift wrap if possible.",
       internalNotes: "Gift wrapping requested with golden ribbon.",
       subtotal: 7200,
@@ -358,16 +400,16 @@ async function main() {
     },
     {
       orderNumber: "AR-20261030-1003",
-      customerName: "Sadman Sakib",
-      customerPhone: "+8801933445566",
-      deliveryAddress: "Agrabad Commercial Area, GPO Box 4100",
-      city: "Chittagong",
-      postalCode: "4100",
+      customerName: "Rohan Verma",
+      customerPhone: "+917304396709",
+      deliveryAddress: "C-42, Defence Colony, Near Ring Road",
+      city: "New Delhi",
+      postalCode: "110024",
       notes: "Office address, deliver between 10am to 5pm.",
-      internalNotes: "Standard courier dispatched via SA Paribahan.",
+      internalNotes: "Standard courier dispatched via Delhivery Express.",
       subtotal: 3100,
-      shippingCharge: 150,
-      total: 3250,
+      shippingCharge: 100,
+      total: 3200,
       status: "SHIPPED",
       createdAt: new Date("2026-10-30T11:45:00Z"),
       items: [
@@ -395,16 +437,16 @@ async function main() {
     },
     {
       orderNumber: "AR-20261031-1004",
-      customerName: "Nusrat Jahan",
-      customerPhone: "+8801555667788",
-      deliveryAddress: "Apartment 6A, Nasirabad Housing Society",
-      city: "Chittagong",
-      postalCode: "4000",
+      customerName: "Pooja Kulkarni",
+      customerPhone: "+918080010107",
+      deliveryAddress: "Apartment 6A, Koregaon Park Plaza",
+      city: "Pune",
+      postalCode: "411001",
       notes: "Just placed order via WhatsApp",
       internalNotes: "Awaiting customer WhatsApp payment proof or confirmation call.",
       subtotal: 4600,
-      shippingCharge: 150,
-      total: 4750,
+      shippingCharge: 0,
+      total: 4600,
       status: "PENDING",
       createdAt: new Date("2026-10-31T09:20:00Z"),
       items: [
@@ -450,48 +492,56 @@ async function main() {
   console.log(`Seeded sample orders.`);
 
   // 5. Store Settings
+  const storeSettingsData = {
+    businessName: "AR Fashion House",
+    storeLogo: null,
+    primaryPhone: "+917304396709",
+    secondaryPhone: "+918080010107",
+    defaultRecipient: "primary",
+    businessEmail: "contact@arfashionhouse.com",
+    shippingCharge: 100,
+    freeShippingThreshold: 2000,
+    currency: "INR",
+    currencySymbol: "₹",
+    storeAnnouncement: "Special Festive Offer: FREE Delivery on orders over ₹2000 across India!",
+    announcementActive: true,
+    facebookUrl: "https://facebook.com/arfashionhouse",
+    instagramUrl: "https://instagram.com/arfashionhouse",
+    whatsappUrl: "https://wa.me/917304396709",
+    address: null,
+  };
+
   await prisma.storeSettings.upsert({
     where: { id: "default" },
-    update: {},
+    update: storeSettingsData,
     create: {
       id: "default",
-      businessName: "AR Fashion House",
-      storeLogo: "/images/logo.png",
-      primaryPhone: "+8801700000000",
-      secondaryPhone: "+8801800000000",
-      defaultRecipient: "primary",
-      businessEmail: "support@arfashionhouse.com",
-      shippingCharge: 100,
-      freeShippingThreshold: 2000,
-      currency: "BDT",
-      currencySymbol: "৳",
-      storeAnnouncement: "Special Festive Offer: FREE Delivery all across Bangladesh on orders over ৳2000!",
-      announcementActive: true,
-      facebookUrl: "https://facebook.com/arfashionhouse",
-      instagramUrl: "https://instagram.com/arfashionhouse",
-      whatsappUrl: "https://wa.me/8801700000000",
-      address: "House 14, Road 6, Sector 11, Uttara, Dhaka-1230, Bangladesh",
+      ...storeSettingsData,
     },
   });
   console.log("Seeded Store Settings.");
 
   // 6. Website Content
+  const websiteContentData = {
+    heroHeading: "Elegance Reimagined for Every Celebration",
+    heroSubheading: "Explore premium handcrafted Panjabis, Banarasi Silks, Contemporary Kurtis and Casual Essentials made with supreme perfection.",
+    heroImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80",
+    heroPrimaryBtnText: "Explore Collection",
+    heroPrimaryBtnLink: "/shop",
+    heroSecondaryBtnText: "View Festive Panjabis",
+    heroSecondaryBtnLink: "/shop?category=mens-panjabi-kurta",
+    announcementBar: "✨ Festive Collection 2026 is LIVE! Direct WhatsApp Order & All-India Express Delivery.",
+    brandStoryTitle: "Preserving Heritage, Crafting Contemporary Luxury",
+    brandStoryText: "AR Fashion House was born out of a profound admiration for Indian handloom traditions combined with modern tailored precision. Every piece in our boutique undergoes rigorous fabric selection, detailed hand-embroidery, and careful tailoring to ensure you exude unmatched elegance.",
+    brandStoryImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
+  };
+
   await prisma.websiteContent.upsert({
     where: { id: "default" },
-    update: {},
+    update: websiteContentData,
     create: {
       id: "default",
-      heroHeading: "Elegance Reimagined for Every Celebration",
-      heroSubheading: "Explore premium handcrafted Panjabis, Banarasi Silks, Contemporary Kurtis and Casual Essentials made with supreme perfection.",
-      heroImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80",
-      heroPrimaryBtnText: "Explore Collection",
-      heroPrimaryBtnLink: "/shop",
-      heroSecondaryBtnText: "View Festive Panjabis",
-      heroSecondaryBtnLink: "/shop?category=mens-panjabi-kurta",
-      announcementBar: "✨ Eid & Wedding Festive Collection 2026 is LIVE! Fast WhatsApp Order & Home Delivery.",
-      brandStoryTitle: "Preserving Heritage, Crafting Contemporary Luxury",
-      brandStoryText: "AR Fashion House was born out of a profound admiration for Bengal's rich handloom traditions combined with modern tailored precision. Every piece in our boutique undergoes rigorous fabric selection, detailed hand-embroidery, and careful tailoring to ensure you exude unmatched elegance.",
-      brandStoryImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
+      ...websiteContentData,
     },
   });
   console.log("Seeded Website Content.");
@@ -510,12 +560,12 @@ At **AR Fashion House**, accessible from our online portal, one of our main prio
 When you browse or place an order via WhatsApp through AR Fashion House, we may ask you to provide certain personally identifiable information:
 - Full Name
 - Mobile / WhatsApp Number
-- Delivery Address and City
+- Full Delivery Address and PIN Code
 - Order specifications (Size, Colour, Quantities)
 
 #### 2. How We Use Your Information
 We use the information we collect in various ways, including to:
-- Process, dispatch, and deliver your clothing orders.
+- Process, dispatch, and deliver your clothing orders across India.
 - Communicate with you via WhatsApp or phone call regarding your order confirmation and courier tracking.
 - Improve our website catalogue, user experience, and customer service.
 - Prevent fraudulent activities and preserve order history records.
@@ -525,8 +575,9 @@ We employ industry-standard security measures, password encryption, and secure d
 
 #### 4. Contact Us
 If you have any questions or suggestions regarding our Privacy Policy, please reach out to us at:
-- **Email:** support@arfashionhouse.com
-- **WhatsApp:** +8801700000000`,
+- **Email:** contact@arfashionhouse.com
+- **WhatsApp Helpline:** +91 7304396709
+- **Secondary Helpline:** +91 8080010107`,
     },
     {
       id: "shipping-policy",
@@ -536,23 +587,22 @@ If you have any questions or suggestions regarding our Privacy Policy, please re
 
 Thank you for shopping at **AR Fashion House**! Here are the terms and conditions that constitute our Shipping Policy.
 
-#### 1. Delivery Coverage
-We deliver nationwide across all 64 districts in Bangladesh through trusted express courier partners (e.g. Steadfast Courier, RedX, Pathao, SA Paribahan).
+#### 1. All-India Delivery Coverage
+We deliver nationwide across all pin codes in India through trusted express courier partners (e.g. Delhivery, Blue Dart, DTDC, India Post Express).
 
 #### 2. Shipping Charges
-- **Inside Dhaka City:** ৳100 Flat Rate
-- **Outside Dhaka (Nationwide):** ৳150 Flat Rate
-- **Free Shipping Threshold:** Orders with a subtotal exceeding **৳2000** automatically qualify for **100% Free Nationwide Delivery**!
+- **Standard All-India Express:** ₹100 Flat Rate
+- **Free Shipping Threshold:** Orders with a subtotal exceeding **₹2000** automatically qualify for **100% Free Nationwide Delivery**!
 
 #### 3. Delivery Timelines
-- **Inside Dhaka:** Delivered within 24 to 48 hours following order confirmation on WhatsApp.
-- **Outside Dhaka (All Districts):** Delivered within 2 to 4 working days.
+- **Metro & Major Cities:** Delivered within 2 to 3 business days following order confirmation on WhatsApp.
+- **Rest of India:** Delivered within 3 to 5 business days.
 
 #### 4. Order Confirmation & Tracking
 Once you place an order on our website, our WhatsApp checkout button will generate a pre-formatted message. Our representative will confirm your delivery address and send you your unique order tracking number once dispatched.
 
-#### 5. Cash on Delivery (COD)
-Cash on delivery is available for most locations. For high-value custom designer outfits, a partial booking advance may be requested during WhatsApp confirmation.`,
+#### 5. Payment Options
+We support Cash on Delivery (COD), UPI (Google Pay, PhonePe, Paytm), and Direct Bank Transfer confirmed via WhatsApp.`,
     },
     {
       id: "return-policy",
@@ -569,15 +619,15 @@ At **AR Fashion House**, our customer satisfaction is paramount. If you are not 
 
 #### 2. Size Exchange Process
 If the size you ordered does not fit perfectly:
-1. Contact us on WhatsApp (+8801700000000) with your Order ID and photo of the item.
+1. Contact us on WhatsApp (+91 7304396709) with your Order ID and photo of the item.
 2. We will check available variant inventory and arrange a pickup/replacement delivery.
-3. Size exchange delivery charge may apply if the original size delivered matched your ordered specification.
+3. Hassle-free exchange assistance provided by our dedicated concierge.
 
 #### 3. Defective or Wrong Item Received
 If you receive a defective garment or incorrect item, please notify us within 24 hours of delivery. We will replace the item immediately with zero additional delivery fee.
 
 #### 4. Refund Processing
-If an eligible returned item cannot be replaced due to out-of-stock inventory, a full refund will be disbursed to your mobile banking account (bKash/Nagad/Bank Transfer) within 3-5 business days of receiving the returned package.`,
+If an eligible returned item cannot be replaced due to out-of-stock inventory, a full refund will be disbursed to your UPI/bank account within 3-5 business days of receiving the returned package.`,
     },
     {
       id: "terms-conditions",
@@ -589,11 +639,11 @@ Welcome to **AR Fashion House**! By accessing this website or placing orders thr
 
 #### 1. Product Information & Pricing
 - We make every effort to display the colors, fabrics, and details of our products accurately. However, slight variations may occur due to photographic lighting or monitor displays.
-- Prices and availability are subject to change without prior notice.
+- Prices and availability are subject to change without prior notice. All prices are listed in Indian Rupees (₹ INR).
 
 #### 2. Order Placement & WhatsApp Checkout
 - Placing an order through our website records the order in our database and generates a detailed order message for WhatsApp.
-- An order is finalized and confirmed once our sales team verifies stock and communication occurs via WhatsApp or phone.
+- An order is finalized and confirmed once our sales team verifies stock and communication occurs via WhatsApp or phone (+91 7304396709 / +91 8080010107).
 
 #### 3. Stock Availability
 - Inventory is updated in real time. In the rare event that an item becomes out-of-stock after order placement, our team will inform you promptly and offer an exchange or refund.

@@ -34,8 +34,10 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
 
   // Photos state
   const [images, setImages] = useState(
-    initialData?.images?.map((img) => (typeof img === 'string' ? img : img.url)) ||
-    (initialData?.mainImage ? [initialData.mainImage] : [])
+    initialData?.images?.map((img) => ({
+      url: typeof img === 'string' ? img : img.url,
+      colour: typeof img === 'object' ? img.colour || '' : '',
+    })) || (initialData?.mainImage ? [{ url: initialData.mainImage, colour: '' }] : [])
   );
   const [mainImage, setMainImage] = useState(initialData?.mainImage || '');
 
@@ -54,13 +56,16 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
   // Categories list
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [currencySymbol, setCurrencySymbol] = useState(
+    (typeof window !== 'undefined' && (window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol'))) || '₹'
+  );
 
   // Submission & Preview state
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  // Load categories
+  // Load categories and settings
   useEffect(() => {
     async function loadCats() {
       try {
@@ -71,6 +76,12 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           if (!categoryId && data.categories.length > 0) {
             setCategoryId(data.categories[0].id);
           }
+        }
+
+        const sRes = await fetch('/api/settings');
+        const sData = await sRes.json();
+        if (sData.success && sData.settings?.currencySymbol) {
+          setCurrencySymbol(sData.settings.currencySymbol);
         }
       } catch (e) {
         console.error(e);
@@ -121,8 +132,11 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
       status: chosenStatus,
       isFeatured: Boolean(isFeatured),
       isNewArrival: Boolean(isNewArrival),
-      mainImage: mainImage || (images.length > 0 ? images[0] : null),
-      images,
+      mainImage: mainImage || (images.length > 0 ? (typeof images[0] === 'string' ? images[0] : images[0].url) : null),
+      images: images.map((img) => ({
+        url: typeof img === 'string' ? img : img.url,
+        colour: typeof img === 'object' && img.colour ? img.colour.trim() : null,
+      })),
       variants,
     };
 
@@ -130,9 +144,14 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
       const url = isEdit ? `/api/products/${initialData.id}` : '/api/products';
       const method = isEdit ? 'PUT' : 'POST';
 
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
 
@@ -287,7 +306,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           {/* Selling Price */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700">
-              Selling Price (৳) <span className="text-rose-500">*</span>
+              Selling Price ({currencySymbol}) <span className="text-rose-500">*</span>
             </label>
             <input
               type="number"
@@ -302,7 +321,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           {/* Original Price (Compare at) */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700">
-              Original Price (৳) <span className="text-slate-400 font-normal">(Optional Strikethrough)</span>
+              Original Price ({currencySymbol}) <span className="text-slate-400 font-normal">(Optional Strikethrough)</span>
             </label>
             <input
               type="number"
@@ -405,6 +424,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           onChange={setImages}
           mainImage={mainImage}
           onMainImageChange={setMainImage}
+          availableColours={[...new Set(variants.map((v) => v.colour).filter(Boolean))]}
         />
       </div>
 
@@ -427,6 +447,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           onChange={setVariants}
           basePrice={Number(sellingPrice) || 0}
           baseSku={sku}
+          currencySymbol={currencySymbol}
         />
       </div>
 
@@ -552,11 +573,11 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                     {/* Price display */}
                     <div className="flex items-baseline gap-3">
                       <span className="text-3xl font-black text-slate-900">
-                        ৳{sellingPrice || '0'}
+                        {currencySymbol}{sellingPrice || '0'}
                       </span>
                       {originalPrice && Number(originalPrice) > Number(sellingPrice) && (
                         <span className="text-base text-slate-400 line-through">
-                          ৳{originalPrice}
+                          {currencySymbol}{originalPrice}
                         </span>
                       )}
                     </div>

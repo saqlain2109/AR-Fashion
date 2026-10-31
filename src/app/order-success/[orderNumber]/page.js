@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function OrderSuccessPage({ params, searchParams }) {
@@ -31,7 +32,7 @@ export default async function OrderSuccessPage({ params, searchParams }) {
     notFound();
   }
 
-  const cleanPhone = (settings?.primaryPhone || '+8801700000000').replace(/[^0-9]/g, '');
+  const cleanPhone = (settings?.primaryPhone || '+917304396709').replace(/[^0-9]/g, '');
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -99,7 +100,7 @@ export default async function OrderSuccessPage({ params, searchParams }) {
                 <div className="col-span-2">
                   <span className="text-slate-400 block">Delivery Address:</span>
                   <span className="text-slate-800 font-medium">
-                    {order.deliveryAddress}, {order.city}
+                    {order.deliveryAddress}{order.city ? `, ${order.city}` : ''}{order.postalCode ? ` (PIN: ${order.postalCode})` : ''}
                   </span>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { formatPrice as formatPriceUtil } from '@/lib/utils';
 
 const CartContext = createContext(null);
 
@@ -7,8 +8,9 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [settings, setSettings] = useState(null);
 
-  // Initialize from localStorage
+  // Initialize cart & settings
   useEffect(() => {
     try {
       const saved = localStorage.getItem('ar_fashion_cart');
@@ -20,6 +22,40 @@ export function CartProvider({ children }) {
     } finally {
       setIsLoaded(true);
     }
+
+    async function loadStoreSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+          if (typeof window !== 'undefined') {
+            window.__STORE_CURRENCY_SYMBOL__ = data.settings.currencySymbol || '₹';
+            localStorage.setItem('ar_currency_symbol', data.settings.currencySymbol || '₹');
+            localStorage.setItem('ar_currency_code', data.settings.currency || 'INR');
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load store settings:', err);
+      }
+    }
+
+    loadStoreSettings();
+
+    const handleSettingsUpdate = (e) => {
+      if (e?.detail) {
+        setSettings(e.detail);
+        if (typeof window !== 'undefined') {
+          window.__STORE_CURRENCY_SYMBOL__ = e.detail.currencySymbol || '₹';
+          localStorage.setItem('ar_currency_symbol', e.detail.currencySymbol || '₹');
+        }
+      } else {
+        loadStoreSettings();
+      }
+    };
+
+    window.addEventListener('store_settings_updated', handleSettingsUpdate);
+    return () => window.removeEventListener('store_settings_updated', handleSettingsUpdate);
   }, []);
 
   // Save on changes
@@ -89,6 +125,9 @@ export function CartProvider({ children }) {
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
+  const currencySymbol = settings?.currencySymbol || (typeof window !== 'undefined' ? localStorage.getItem('ar_currency_symbol') : null) || '₹';
+  const formatPrice = (amount) => formatPriceUtil(amount, currencySymbol);
+
   return (
     <CartContext.Provider
       value={{
@@ -101,6 +140,9 @@ export function CartProvider({ children }) {
         subtotal,
         drawerOpen,
         setDrawerOpen,
+        settings,
+        currencySymbol,
+        formatPrice,
       }}
     >
       {children}

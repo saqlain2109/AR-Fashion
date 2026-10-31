@@ -1,11 +1,15 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin, ShieldCheck, Heart, Sparkles } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Heart, Sparkles, MessageCircle } from 'lucide-react';
 
 export default function StoreFooter({ settings = null }) {
   const businessName = settings?.businessName || 'AR Fashion House';
-  const primaryPhone = settings?.primaryPhone || '+8801700000000';
-  const email = settings?.businessEmail || 'support@arfashionhouse.com';
-  const address = settings?.address || 'House 14, Road 6, Sector 11, Uttara, Dhaka, Bangladesh';
+  const primaryPhone = settings?.primaryPhone || '+917304396709';
+  const secondaryPhone = settings?.secondaryPhone || '+918080010107';
+  const email = settings?.businessEmail || 'contact@arfashionhouse.com';
+  const address = settings?.address;
+
+  const cleanPrimary = primaryPhone.replace(/[^0-9]/g, '');
+  const cleanSecondary = secondaryPhone ? secondaryPhone.replace(/[^0-9]/g, '') : null;
 
   return (
     <footer className="bg-[#0B132B] text-slate-400 text-xs border-t border-slate-800">
@@ -27,11 +31,11 @@ export default function StoreFooter({ settings = null }) {
             </div>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed font-normal">
-            Handcrafted traditional & contemporary clothing tailored for perfection across Bangladesh.
+            Handcrafted traditional & contemporary ethnic luxury clothing tailored for supreme perfection.
           </p>
           <div className="pt-2 text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
             <ShieldCheck size={14} />
-            <span>100% Quality Organic Fabrics</span>
+            <span>100% Quality Fabrics & Handcraft</span>
           </div>
         </div>
 
@@ -58,7 +62,7 @@ export default function StoreFooter({ settings = null }) {
             </li>
             <li>
               <Link href="/shop?filter=new" className="hover:text-emerald-400 transition-colors">
-                New Arrivals 2026
+                New Arrivals
               </Link>
             </li>
             <li>
@@ -77,7 +81,7 @@ export default function StoreFooter({ settings = null }) {
           <ul className="space-y-2 text-xs font-medium">
             <li>
               <Link href="/policies/shipping-policy" className="hover:text-emerald-400 transition-colors">
-                Shipping & Nationwide Delivery
+                Shipping & Express Delivery
               </Link>
             </li>
             <li>
@@ -101,26 +105,64 @@ export default function StoreFooter({ settings = null }) {
         {/* Contact info & WhatsApp order */}
         <div className="space-y-3">
           <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
-            Order Helpline
+            Contact & WhatsApp
           </h4>
-          <div className="space-y-2.5 text-xs">
+          <div className="space-y-3 text-xs">
+            {/* Primary Phone / WhatsApp */}
             <div className="flex items-start gap-2.5">
               <Phone size={14} className="text-emerald-400 shrink-0 mt-0.5" />
               <div>
-                <span className="block text-slate-200 font-mono font-bold">{primaryPhone}</span>
-                <span className="text-[10px] text-slate-400">WhatsApp & Direct Calls (10 AM - 10 PM)</span>
+                <a
+                  href={`https://wa.me/${cleanPrimary}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-slate-100 font-mono font-bold hover:text-emerald-400 transition-colors"
+                >
+                  {primaryPhone}
+                </a>
+                <span className="text-[10px] text-emerald-400/90 font-medium flex items-center gap-1">
+                  <MessageCircle size={10} />
+                  <span>Primary WhatsApp Helpline</span>
+                </span>
               </div>
             </div>
 
+            {/* Secondary Phone if available */}
+            {secondaryPhone && (
+              <div className="flex items-start gap-2.5">
+                <Phone size={14} className="text-teal-400 shrink-0 mt-0.5" />
+                <div>
+                  <a
+                    href={`https://wa.me/${cleanSecondary}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-slate-100 font-mono font-bold hover:text-teal-400 transition-colors"
+                  >
+                    {secondaryPhone}
+                  </a>
+                  <span className="text-[10px] text-slate-400 font-medium">Secondary Line & WhatsApp</span>
+                </div>
+              </div>
+            )}
+
+            {/* Email */}
             <div className="flex items-center gap-2.5">
               <Mail size={14} className="text-emerald-400 shrink-0" />
-              <span className="text-slate-300">{email}</span>
+              <a
+                href={`mailto:${email}`}
+                className="text-slate-300 hover:text-white transition-colors"
+              >
+                {email}
+              </a>
             </div>
 
-            <div className="flex items-start gap-2.5">
-              <MapPin size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-              <span className="text-slate-400 leading-relaxed">{address}</span>
-            </div>
+            {/* Physical address only if owner configured it in settings */}
+            {address && address.trim() !== '' && (
+              <div className="flex items-start gap-2.5 pt-1">
+                <MapPin size={14} className="text-emerald-400 shrink-0 mt-0.5" />
+                <span className="text-slate-400 leading-relaxed">{address}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

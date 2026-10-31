@@ -31,6 +31,9 @@ export default function AdminOrdersPage() {
   const [statusVal, setStatusVal] = useState('PENDING');
   const [internalNotesVal, setInternalNotesVal] = useState('');
   const [savingOrder, setSavingOrder] = useState(false);
+  const [currencySymbol, setCurrencySymbol] = useState(
+    (typeof window !== 'undefined' && (window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol'))) || '₹'
+  );
 
   const fetchOrders = async () => {
     try {
@@ -38,10 +41,21 @@ export default function AdminOrdersPage() {
       const url = selectedStatusFilter !== 'ALL'
         ? `/api/orders?status=${selectedStatusFilter}`
         : '/api/orders';
-      const res = await fetch(url);
+
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(url, { headers, credentials: 'include' });
       const data = await res.json();
       if (data.success && data.orders) {
         setOrders(data.orders);
+      }
+
+      const sRes = await fetch('/api/settings');
+      const sData = await sRes.json();
+      if (sData.success && sData.settings?.currencySymbol) {
+        setCurrencySymbol(sData.settings.currencySymbol);
       }
     } catch (e) {
       console.error(e);
@@ -69,9 +83,14 @@ export default function AdminOrdersPage() {
     if (!selectedOrder) return;
     setSavingOrder(true);
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch(`/api/orders/${selectedOrder.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           status: statusVal,
           internalNotes: internalNotesVal,
@@ -161,7 +180,7 @@ export default function AdminOrdersPage() {
       key: 'total',
       label: 'Estimated Total',
       sortable: true,
-      render: (val) => <span className="font-black text-slate-900">{formatPrice(val)}</span>,
+      render: (val) => <span className="font-black text-slate-900">{formatPrice(val, currencySymbol)}</span>,
     },
     {
       key: 'status',
@@ -380,10 +399,10 @@ export default function AdminOrdersPage() {
 
                         <div className="text-right">
                           <p className="font-extrabold text-slate-900">
-                            {formatPrice(item.totalPrice)}
+                            {formatPrice(item.totalPrice, currencySymbol)}
                           </p>
                           <p className="text-[11px] text-slate-400">
-                            {item.quantity} × {formatPrice(item.unitPrice)}
+                            {item.quantity} × {formatPrice(item.unitPrice, currencySymbol)}
                           </p>
                         </div>
                       </div>
@@ -394,17 +413,17 @@ export default function AdminOrdersPage() {
                   <div className="border-t border-slate-200 pt-3 space-y-1.5 text-xs">
                     <div className="flex justify-between text-slate-500">
                       <span>Subtotal:</span>
-                      <span className="font-bold text-slate-800">{formatPrice(selectedOrder.subtotal)}</span>
+                      <span className="font-bold text-slate-800">{formatPrice(selectedOrder.subtotal, currencySymbol)}</span>
                     </div>
                     <div className="flex justify-between text-slate-500">
                       <span>Delivery Fee:</span>
                       <span className="font-bold text-slate-800">
-                        {selectedOrder.shippingCharge === 0 ? 'FREE' : formatPrice(selectedOrder.shippingCharge)}
+                        {selectedOrder.shippingCharge === 0 ? 'FREE' : formatPrice(selectedOrder.shippingCharge, currencySymbol)}
                       </span>
                     </div>
                     <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
                       <span>Estimated Total:</span>
-                      <span className="text-emerald-700">{formatPrice(selectedOrder.total)}</span>
+                      <span className="text-emerald-700">{formatPrice(selectedOrder.total, currencySymbol)}</span>
                     </div>
                   </div>
                 </div>
@@ -422,7 +441,7 @@ export default function AdminOrdersPage() {
                     rows={3}
                     value={internalNotesVal}
                     onChange={(e) => setInternalNotesVal(e.target.value)}
-                    placeholder="e.g. Courier tracking #PATHAO-8849. Paid advance bKash ৳500..."
+                    placeholder="e.g. Courier tracking #DELHIVERY-8849. Paid advance UPI ₹500..."
                     className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs"
                   />
                 </div>

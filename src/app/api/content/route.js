@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     let content = await prisma.websiteContent.findUnique({ where: { id: 'default' } });
@@ -88,4 +90,8 @@ export async function PUT(req) {
     console.error('Update content error:', error);
     return NextResponse.json({ error: error.message || 'Failed to update website content' }, { status: 500 });
   }
+}
+
+export async function POST(req) {
+  return PUT(req);
 }

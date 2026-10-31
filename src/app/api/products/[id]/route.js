@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req, { params }) {
   try {
     const { id } = params;
@@ -133,11 +135,14 @@ export async function PUT(req, { params }) {
       if (Array.isArray(images)) {
         await tx.productImage.deleteMany({ where: { productId: id } });
         for (let i = 0; i < images.length; i++) {
-          const imgUrl = typeof images[i] === 'string' ? images[i] : images[i].url;
+          const item = images[i];
+          const imgUrl = typeof item === 'string' ? item : item.url;
+          const imgColour = typeof item === 'object' && item.colour ? item.colour.trim() : null;
           await tx.productImage.create({
             data: {
               productId: id,
               url: imgUrl,
+              colour: imgColour,
               displayOrder: i,
               isMain: imgUrl === primaryImg || i === 0,
             },

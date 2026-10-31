@@ -74,9 +74,14 @@ export default function AdminSettingsPage() {
     setErrorMessage('');
 
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch('/api/settings', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify(settings),
       });
 
@@ -84,7 +89,14 @@ export default function AdminSettingsPage() {
       if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save settings');
 
       setSettings(data.settings);
-      showToast('Store settings saved successfully!');
+      if (typeof window !== 'undefined') {
+        const sym = data.settings.currencySymbol || '₹';
+        window.__STORE_CURRENCY_SYMBOL__ = sym;
+        localStorage.setItem('ar_currency_symbol', sym);
+        localStorage.setItem('ar_currency_code', data.settings.currency || 'INR');
+        window.dispatchEvent(new CustomEvent('store_settings_updated', { detail: data.settings }));
+      }
+      showToast(`Settings saved! Currency updated to ${data.settings.currencySymbol || '₹'} (${data.settings.currency || 'INR'})`);
     } catch (err) {
       setErrorMessage(err.message || 'Error saving settings');
     } finally {
@@ -202,24 +214,24 @@ export default function AdminSettingsPage() {
               <input
                 type="text"
                 required
-                placeholder="+8801700000000"
+                placeholder="+917304396709"
                 value={settings.primaryPhone || ''}
                 onChange={(e) => setSettings({ ...settings, primaryPhone: e.target.value })}
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold"
               />
-              <p className="text-[10px] text-slate-400">Include country code (e.g. +880 or +91)</p>
+              <p className="text-[10px] text-slate-400">Include country code (e.g. +91 7304396709)</p>
             </div>
 
             <div className="space-y-1">
               <label className="font-bold text-slate-700">Secondary WhatsApp Number</label>
               <input
                 type="text"
-                placeholder="+8801800000000"
+                placeholder="+918080010107"
                 value={settings.secondaryPhone || ''}
                 onChange={(e) => setSettings({ ...settings, secondaryPhone: e.target.value })}
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold"
               />
-              <p className="text-[10px] text-slate-400">Backup recipient line</p>
+              <p className="text-[10px] text-slate-400">Backup recipient line (e.g. +91 8080010107)</p>
             </div>
 
             <div className="space-y-1">
@@ -238,19 +250,62 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* 3. Currency & Delivery Fees */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-5">
           <h2 className="text-base font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
             <Truck size={18} className="text-emerald-600" />
             <span>Shipping & Currency Settings</span>
           </h2>
+
+          {/* Quick Currency Selector Presets */}
+          <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <label className="font-bold text-slate-700 block text-xs">
+              Quick Currency Presets (Click to switch store currency)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { code: 'INR', symbol: '₹', label: '₹ INR (Indian Rupee)' },
+                { code: 'USD', symbol: '$', label: '$ USD (US Dollar)' },
+                { code: 'AED', symbol: 'AED ', label: 'AED (UAE Dirham)' },
+                { code: 'GBP', symbol: '£', label: '£ GBP (British Pound)' },
+                { code: 'EUR', symbol: '€', label: '€ EUR (Euro)' },
+                { code: 'CAD', symbol: 'C$', label: 'C$ CAD (Canadian Dollar)' },
+                { code: 'AUD', symbol: 'A$', label: 'A$ AUD (Australian Dollar)' },
+              ].map((preset) => {
+                const isSelected =
+                  settings?.currency === preset.code && settings?.currencySymbol === preset.symbol;
+                return (
+                  <button
+                    key={preset.code}
+                    type="button"
+                    onClick={() => {
+                      setSettings({
+                        ...settings,
+                        currency: preset.code,
+                        currencySymbol: preset.symbol,
+                      });
+                      showToast(`Switched currency to ${preset.symbol} (${preset.code}) - Click "Save Settings" to apply!`);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                      isSelected
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
               <label className="font-bold text-slate-700">Currency Code</label>
               <input
                 type="text"
-                value={settings.currency || 'BDT'}
+                value={settings?.currency ?? ''}
                 onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+                placeholder="e.g. INR, BDT, USD"
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold font-mono"
               />
             </div>
@@ -259,29 +314,34 @@ export default function AdminSettingsPage() {
               <label className="font-bold text-slate-700">Currency Symbol</label>
               <input
                 type="text"
-                value={settings.currencySymbol || '৳'}
+                value={settings?.currencySymbol ?? ''}
                 onChange={(e) => setSettings({ ...settings, currencySymbol: e.target.value })}
+                placeholder="e.g. ₹, $, AED, £"
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700">Standard Delivery Fee (৳)</label>
+              <label className="font-bold text-slate-700">
+                Standard Delivery Fee ({settings?.currencySymbol || '₹'})
+              </label>
               <input
                 type="number"
                 min="0"
-                value={settings.shippingCharge ?? 100}
+                value={settings?.shippingCharge ?? 100}
                 onChange={(e) => setSettings({ ...settings, shippingCharge: parseFloat(e.target.value) || 0 })}
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700">Free Shipping Threshold (৳)</label>
+              <label className="font-bold text-slate-700">
+                Free Shipping Threshold ({settings?.currencySymbol || '₹'})
+              </label>
               <input
                 type="number"
                 min="0"
-                value={settings.freeShippingThreshold ?? 2000}
+                value={settings?.freeShippingThreshold ?? 2000}
                 onChange={(e) =>
                   setSettings({ ...settings, freeShippingThreshold: parseFloat(e.target.value) || 0 })
                 }
@@ -316,7 +376,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={settings.storeAnnouncement || ''}
                 onChange={(e) => setSettings({ ...settings, storeAnnouncement: e.target.value })}
-                placeholder="e.g. Free Delivery on orders above ৳2000 this week!"
+                placeholder="e.g. Free Delivery on orders above ₹2000 across India!"
                 className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium"
               />
             </div>

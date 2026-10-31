@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -53,4 +55,8 @@ export async function PUT(req) {
     console.error('Update policy error:', error);
     return NextResponse.json({ error: error.message || 'Failed to update policy' }, { status: 500 });
   }
+}
+
+export async function POST(req) {
+  return PUT(req);
 }

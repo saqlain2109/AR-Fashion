@@ -21,14 +21,27 @@ import { formatPrice, formatDate } from '@/lib/utils';
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currencySymbol, setCurrencySymbol] = useState(
+    (typeof window !== 'undefined' && (window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol'))) || '₹'
+  );
 
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/dashboard/stats');
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/dashboard/stats', { headers, credentials: 'include' });
       const data = await res.json();
       if (data.success && data.stats) {
         setStats(data.stats);
+      }
+
+      const sRes = await fetch('/api/settings');
+      const sData = await sRes.json();
+      if (sData.success && sData.settings?.currencySymbol) {
+        setCurrencySymbol(sData.settings.currencySymbol);
       }
     } catch (e) {
       console.error(e);
@@ -156,7 +169,7 @@ export default function AdminDashboardPage() {
               <span>Confirmed Store Revenue</span>
             </div>
             <h3 className="text-3xl font-black text-white">
-              {loading ? '...' : formatPrice(stats?.totalRevenue ?? 0)}
+              {loading ? '...' : formatPrice(stats?.totalRevenue ?? 0, currencySymbol)}
             </h3>
             <p className="text-xs text-slate-400 mt-2 leading-relaxed">
               Calculated from confirmed, processing, shipped, and completed WhatsApp orders.
@@ -289,7 +302,7 @@ export default function AdminDashboardPage() {
                         {order.items?.length || 0} item(s)
                       </td>
                       <td className="py-3 px-4 font-bold text-slate-900">
-                        {formatPrice(order.total)}
+                        {formatPrice(order.total, currencySymbol)}
                       </td>
                       <td className="py-3 px-4 text-slate-500">
                         {formatDate(order.createdAt)}

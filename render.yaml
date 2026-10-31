@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ar-fashion-house
+    runtime: node
+    plan: free
+    region: singapore # or oregon, frankfurt
+    buildCommand: npm install && npx prisma db push && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: file:./prisma/ar_fashion.db

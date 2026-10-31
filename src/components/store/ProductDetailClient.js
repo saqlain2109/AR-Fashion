@@ -1,65 +1,88 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useCart } from './CartContext';
 import {
   ShoppingBag,
+  Check,
+  Phone,
   Truck,
   ShieldCheck,
-  Check,
+  RotateCcw,
+  Sparkles,
   Minus,
   Plus,
-  MessageSquare,
+  Share2,
   AlertCircle,
-  Sparkles,
-  ArrowRight,
-  Eye,
-  RefreshCw,
+  Camera,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import Link from 'next/link';
 
 export default function ProductDetailClient({ product, settings }) {
   const { addToCart, setDrawerOpen } = useCart();
 
-  // Images list
-  const allImages = useMemo(() => {
-    const list = product.images?.map((img) => (typeof img === 'string' ? img : img.url)) || [];
-    if (product.mainImage && !list.includes(product.mainImage)) {
-      list.unshift(product.mainImage);
+  // 1. Raw image objects with optional colour tags: [{ url, colour }, ...]
+  const rawImages = useMemo(() => {
+    const list = (product.images || []).map((img) => ({
+      url: typeof img === 'string' ? img : img.url,
+      colour: typeof img === 'object' ? img.colour || '' : '',
+    }));
+    if (product.mainImage && !list.some((i) => i.url === product.mainImage)) {
+      list.unshift({ url: product.mainImage, colour: '' });
     }
-    return list.length > 0 ? list : ['https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80'];
+    return list.length > 0
+      ? list
+      : [{ url: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80', colour: '' }];
   }, [product]);
 
-  // Extract all unique colour variants
+  // 2. Extract all unique colour variants
   const availableColours = useMemo(() => {
     const map = new Map();
-    product.variants.forEach((v, idx) => {
+    (product.variants || []).forEach((v) => {
       if (!map.has(v.colour)) {
-        // Map colour to an image in allImages so switching colour updates the photograph!
-        const imageIndex = map.size % allImages.length;
+        // Find if any image is specifically tagged for this colour
+        const colourImg = rawImages.find(
+          (img) => img.colour && img.colour.toLowerCase() === v.colour.toLowerCase()
+        );
         map.set(v.colour, {
           name: v.colour,
           code: v.colourCode || '#1E293B',
-          imageUrl: allImages[imageIndex] || allImages[0],
+          imageUrl: colourImg ? colourImg.url : rawImages[0]?.url,
         });
       }
     });
     return Array.from(map.values());
-  }, [product.variants, allImages]);
+  }, [product.variants, rawImages]);
 
   // Active colour selection
   const [selectedColour, setSelectedColour] = useState(
     availableColours[0]?.name || ''
   );
 
-  // Active display image (switches when colour switches!)
+  // 3. Dynamically filter displayed images based on selectedColour!
+  // If images exist specifically tagged for this colour, show those colour images!
+  // Otherwise show all general images.
+  const displayedImages = useMemo(() => {
+    if (!selectedColour) return rawImages.map((i) => i.url);
+    const colourSpecific = rawImages.filter(
+      (img) => img.colour && img.colour.toLowerCase() === selectedColour.toLowerCase()
+    );
+    if (colourSpecific.length > 0) {
+      // Return images tagged for this colour, followed by untagged general photos
+      const general = rawImages.filter((img) => !img.colour);
+      return [...colourSpecific, ...general].map((i) => i.url);
+    }
+    return rawImages.map((i) => i.url);
+  }, [rawImages, selectedColour]);
+
+  // Active display image (switches when colour or thumbnail clicked)
   const [activeImage, setActiveImage] = useState(
-    availableColours[0]?.imageUrl || allImages[0]
+    displayedImages[0] || rawImages[0]?.url
   );
 
   // Available sizes under the selected colour
   const sizesForColour = useMemo(() => {
-    return product.variants.filter((v) => v.colour === selectedColour);
+    return (product.variants || []).filter((v) => v.colour === selectedColour);
   }, [product.variants, selectedColour]);
 
   // Selected Variant ID
@@ -71,20 +94,26 @@ export default function ProductDetailClient({ product, settings }) {
   const [quantity, setQuantity] = useState(1);
 
   // When selectedColour changes:
-  // 1. Switch the main image to the color's image
-  // 2. Select the first available size in that color
-  // 3. Reset quantity to 1
+  // 1. Switch the main image to the color's first photo
+  // 2. Filter the thumbnail carousel to photos for this color
+  // 3. Select the first available size in that color
+  // 4. Reset quantity to 1
   const handleColourChange = (colourObj) => {
     setSelectedColour(colourObj.name);
 
-    // Switch main photo to this colour's photo!
-    if (colourObj.imageUrl) {
+    // Find first photo specifically for this colour
+    const matchImg = rawImages.find(
+      (img) => img.colour && img.colour.toLowerCase() === colourObj.name.toLowerCase()
+    );
+
+    if (matchImg) {
+      setActiveImage(matchImg.url);
+    } else if (colourObj.imageUrl) {
       setActiveImage(colourObj.imageUrl);
     }
 
-    const availableVariants = product.variants.filter((v) => v.colour === colourObj.name);
+    const availableVariants = (product.variants || []).filter((v) => v.colour === colourObj.name);
     if (availableVariants.length > 0) {
-      // Pick first in-stock variant, or first variant if all out
       const inStockOne = availableVariants.find((v) => v.stock > 0) || availableVariants[0];
       setSelectedVariantId(inStockOne.id);
       setQuantity(1);
@@ -94,7 +123,7 @@ export default function ProductDetailClient({ product, settings }) {
   // Currently active variant object
   const activeVariant = useMemo(() => {
     return (
-      product.variants.find((v) => v.id === selectedVariantId) ||
+      (product.variants || []).find((v) => v.id === selectedVariantId) ||
       sizesForColour[0] ||
       null
     );
@@ -115,12 +144,13 @@ export default function ProductDetailClient({ product, settings }) {
     addToCart(product, activeVariant, quantity);
   };
 
-  const waPhone = settings?.primaryPhone || '+8801700000000';
+  const currencySymbol = settings?.currencySymbol || '₹';
+  const waPhone = settings?.primaryPhone || '+917304396709';
   const cleanPhone = waPhone.replace(/[^0-9]/g, '');
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
-      {/* 1. High-Resolution Photographs Showcase with Active Colour Sync */}
+      {/* 1. High-Resolution Photographs Showcase with Dynamic Colour Filter */}
       <div className="space-y-4">
         {/* Main Display Image */}
         <div className="aspect-[3/4] w-full rounded-3xl overflow-hidden bg-stone-100 border border-stone-200/90 shadow-md relative group">
@@ -132,15 +162,20 @@ export default function ProductDetailClient({ product, settings }) {
           />
 
           {/* Active Colour Indicator Badge on Photo */}
-          <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+          <div className="absolute bottom-4 left-4 bg-slate-950/85 backdrop-blur-md text-white text-xs font-semibold px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-lg border border-white/10">
             <span
-              className="w-3 h-3 rounded-full border border-white/50"
+              className="w-3.5 h-3.5 rounded-full border border-white/60 shadow-xs"
               style={{
                 backgroundColor:
                   availableColours.find((c) => c.name === selectedColour)?.code || '#1E293B',
               }}
             />
-            <span>Colour: {selectedColour}</span>
+            <span className="font-bold">{selectedColour}</span>
+            {displayedImages.length > 1 && (
+              <span className="text-[10px] text-slate-300 border-l border-slate-600 pl-2">
+                {displayedImages.length} photos
+              </span>
+            )}
           </div>
 
           {/* Badges */}
@@ -158,23 +193,36 @@ export default function ProductDetailClient({ product, settings }) {
           </div>
         </div>
 
-        {/* Thumbnails list */}
-        {allImages.length > 1 && (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-            {allImages.map((img, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setActiveImage(img)}
-                className={`w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 transition-all ${
-                  activeImage === img
-                    ? 'border-emerald-700 ring-2 ring-emerald-600/30 scale-105 shadow-md'
-                    : 'border-stone-200 opacity-60 hover:opacity-100'
-                }`}
-              >
-                <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
+        {/* Thumbnails list filtered for this specific colour */}
+        {displayedImages.length > 1 ? (
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 px-1">
+              <span className="flex items-center gap-1.5">
+                <Camera size={13} className="text-emerald-700" />
+                <span>Photographs in {selectedColour}</span>
+              </span>
+              <span className="text-[10px] text-slate-400">Click photo to zoom</span>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+              {displayedImages.map((img, idx) => (
+                <button
+                  key={img + idx}
+                  type="button"
+                  onClick={() => setActiveImage(img)}
+                  className={`w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 transition-all ${
+                    activeImage === img
+                      ? 'border-emerald-700 ring-2 ring-emerald-600/30 scale-105 shadow-md'
+                      : 'border-stone-200 opacity-70 hover:opacity-100 hover:border-slate-400'
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
+            <span>Primary view for {selectedColour}</span>
           </div>
         )}
       </div>
@@ -196,15 +244,15 @@ export default function ProductDetailClient({ product, settings }) {
         {/* Price Display */}
         <div className="flex items-baseline gap-3 pb-4 border-b border-stone-100">
           <span className="text-3xl sm:text-4xl font-black text-slate-950 font-serif-luxury">
-            {formatPrice(effectivePrice)}
+            {formatPrice(effectivePrice, currencySymbol)}
           </span>
           {product.originalPrice && product.originalPrice > effectivePrice && (
             <>
               <span className="text-lg text-slate-400 line-through">
-                {formatPrice(product.originalPrice)}
+                {formatPrice(product.originalPrice, currencySymbol)}
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-50 text-amber-800 border border-amber-200">
-                Save {formatPrice(product.originalPrice - effectivePrice)}
+                Save {formatPrice(product.originalPrice - effectivePrice, currencySymbol)}
               </span>
             </>
           )}
@@ -213,36 +261,44 @@ export default function ProductDetailClient({ product, settings }) {
         {/* 1. Interactive Colour Switcher (Switches photo & sizes!) */}
         {availableColours.length > 0 && (
           <div className="space-y-2.5">
-            <div className="flex justify-between text-xs font-bold">
-              <span className="text-slate-800">
-                1. Select Colour:{' '}
-                <strong className="text-emerald-800 text-sm font-black underline decoration-emerald-500">
-                  {selectedColour}
-                </strong>
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+              <span className="flex items-center gap-1.5">
+                <span>Select Colour:</span>
+                <strong className="text-emerald-800">{selectedColour}</strong>
               </span>
-              <span className="text-slate-400 font-normal">Click swatch to view shade</span>
+              <span className="text-slate-400 font-normal">
+                ({availableColours.length} options available)
+              </span>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              {availableColours.map((col) => {
-                const isSelected = selectedColour === col.name;
+            <div className="flex flex-wrap gap-2.5">
+              {availableColours.map((c) => {
+                const isSelected = selectedColour === c.name;
+                const colourStock = (product.variants || [])
+                  .filter((v) => v.colour === c.name)
+                  .reduce((sum, v) => sum + v.stock, 0);
+
                 return (
                   <button
-                    key={col.name}
+                    key={c.name}
                     type="button"
-                    onClick={() => handleColourChange(col)}
-                    className={`flex items-center gap-2.5 px-4 py-2 rounded-2xl border text-xs font-extrabold transition-all ${
+                    onClick={() => handleColourChange(c)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-2xl border-2 transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-slate-900 text-white border-slate-900 ring-2 ring-emerald-600/40 shadow-md scale-105'
-                        : 'bg-stone-50 text-slate-800 border-stone-200 hover:bg-stone-100 hover:border-stone-300'
+                        ? 'border-emerald-700 bg-emerald-50/50 text-emerald-950 font-bold shadow-xs'
+                        : 'border-stone-200 hover:border-stone-400 text-slate-700'
                     }`}
                   >
                     <span
-                      className="w-4 h-4 rounded-full border border-black/20 shrink-0 shadow-xs"
-                      style={{ backgroundColor: col.code }}
+                      className="w-4 h-4 rounded-full border border-black/20 shrink-0 shadow-2xs"
+                      style={{ backgroundColor: c.code }}
                     />
-                    <span>{col.name}</span>
-                    {isSelected && <Check size={13} className="text-emerald-400 ml-0.5" />}
+                    <span className="text-xs">{c.name}</span>
+                    {colourStock <= 0 ? (
+                      <span className="text-[10px] text-rose-500 font-bold">(Sold Out)</span>
+                    ) : isSelected ? (
+                      <Check size={13} className="text-emerald-700" />
+                    ) : null}
                   </button>
                 );
               })}
@@ -250,90 +306,94 @@ export default function ProductDetailClient({ product, settings }) {
           </div>
         )}
 
-        {/* 2. Interactive Size Selector for Current Colour */}
-        <div className="space-y-2.5 pt-2">
-          <div className="flex justify-between items-center text-xs font-bold">
-            <span className="text-slate-800">
-              2. Select Size for {selectedColour}:
-            </span>
-            {activeVariant && (
-              <span
-                className={`text-[11px] font-extrabold ${
-                  activeVariant.stock > 5
-                    ? 'text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200'
-                    : activeVariant.stock > 0
-                    ? 'text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200'
-                    : 'text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200'
-                }`}
-              >
-                {activeVariant.stock > 0
-                  ? `In Stock (${activeVariant.stock} available)`
-                  : 'Out of Stock in this size'}
-              </span>
-            )}
+        {/* 2. Interactive Size Selector */}
+        {sizesForColour.length > 0 && (
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+              <span>Select Size:</span>
+              {activeVariant && (
+                <span className="text-slate-500 font-medium">
+                  {activeVariant.stock > 0 ? (
+                    <span className="text-emerald-700 font-bold">
+                      {activeVariant.stock <= 5
+                        ? `Only ${activeVariant.stock} left in stock!`
+                        : `In Stock (${activeVariant.stock} units)`}
+                    </span>
+                  ) : (
+                    <span className="text-rose-600 font-bold">Out of stock in this size</span>
+                  )}
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {sizesForColour.map((v) => {
+                const isSelected = selectedVariantId === v.id;
+                const outOfStock = v.stock <= 0;
+
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    disabled={outOfStock}
+                    onClick={() => {
+                      setSelectedVariantId(v.id);
+                      setQuantity(1);
+                    }}
+                    className={`py-3 px-2 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center gap-0.5 ${
+                      isSelected
+                        ? 'border-emerald-700 bg-emerald-600 text-white font-black shadow-md'
+                        : outOfStock
+                        ? 'border-stone-200 bg-stone-50 text-stone-400 cursor-not-allowed line-through'
+                        : 'border-stone-200 bg-white hover:border-emerald-600 text-slate-800 font-bold'
+                    }`}
+                  >
+                    <span className="text-xs font-mono">{v.size}</span>
+                    {v.price && v.price !== product.sellingPrice && (
+                      <span
+                        className={`text-[10px] ${
+                          isSelected ? 'text-emerald-100' : 'text-slate-400'
+                        }`}
+                      >
+                        {formatPrice(v.price, currencySymbol)}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+        )}
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
-            {sizesForColour.map((v) => {
-              const isSelected = activeVariant?.id === v.id;
-              const outOfStock = v.stock <= 0;
-
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  disabled={outOfStock}
-                  onClick={() => {
-                    setSelectedVariantId(v.id);
-                    setQuantity(1);
-                  }}
-                  className={`p-3 rounded-2xl border text-center transition-all relative ${
-                    isSelected
-                      ? 'border-emerald-700 bg-emerald-50 text-emerald-950 font-black ring-2 ring-emerald-600/30 shadow-xs'
-                      : outOfStock
-                      ? 'border-stone-200 bg-stone-100 text-stone-400 cursor-not-allowed opacity-50 line-through'
-                      : 'border-stone-200 bg-white hover:border-stone-400 text-slate-800 font-bold hover:bg-stone-50'
-                  }`}
-                >
-                  <span className="block text-sm sm:text-base font-extrabold">{v.size}</span>
-                  <span className="block text-[10px] mt-0.5 font-semibold opacity-75">
-                    {outOfStock ? 'Sold Out' : `${v.stock} left`}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 3. Quantity Stepper */}
+        {/* 3. Quantity Counter */}
         <div className="space-y-2 pt-2">
-          <label className="text-xs font-bold text-slate-800 block">3. Quantity:</label>
+          <label className="text-xs font-bold text-slate-800 block">Quantity:</label>
           <div className="flex items-center gap-4">
-            <div className="flex items-center border border-stone-300 rounded-2xl overflow-hidden bg-stone-50 shadow-xs">
+            <div className="flex items-center border border-stone-300 rounded-2xl overflow-hidden bg-stone-50">
               <button
                 type="button"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 disabled={quantity <= 1 || isOutOfStock}
-                className="p-3 text-slate-700 hover:bg-stone-200 disabled:opacity-30 transition-colors"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="p-2.5 hover:bg-stone-200 text-slate-700 disabled:opacity-40 transition-colors"
                 aria-label="Decrease quantity"
               >
                 <Minus size={15} />
               </button>
-              <span className="w-12 text-center text-sm font-black text-slate-900">
+              <span className="w-12 text-center text-sm font-bold text-slate-900 font-mono">
                 {quantity}
               </span>
               <button
                 type="button"
-                onClick={() => setQuantity((q) => Math.min(maxStock, q + 1))}
                 disabled={quantity >= maxStock || isOutOfStock}
-                className="p-3 text-slate-700 hover:bg-stone-200 disabled:opacity-30 transition-colors"
+                onClick={() => setQuantity(Math.min(maxStock, quantity + 1))}
+                className="p-2.5 hover:bg-stone-200 text-slate-700 disabled:opacity-40 transition-colors"
                 aria-label="Increase quantity"
               >
                 <Plus size={15} />
               </button>
             </div>
             <div className="text-xs text-slate-600">
-              Total: <strong className="text-slate-900 font-black text-sm">{formatPrice(effectivePrice * quantity)}</strong>
+              Total: <strong className="text-slate-900 font-black text-sm">{formatPrice(effectivePrice * quantity, currencySymbol)}</strong>
             </div>
           </div>
         </div>
@@ -344,45 +404,55 @@ export default function ProductDetailClient({ product, settings }) {
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="w-full py-4 bg-slate-950 hover:bg-slate-800 active:bg-black text-white font-black text-sm rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className={`w-full py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2.5 shadow-lg ${
+              isOutOfStock
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-700/25 active:scale-[0.99] cursor-pointer'
+            }`}
           >
             <ShoppingBag size={18} />
-            <span>{isOutOfStock ? 'Sold Out in Selected Combination' : 'Add to Shopping Bag'}</span>
+            <span>{isOutOfStock ? 'Sold Out in this Combination' : 'Add to Bag'}</span>
           </button>
 
-          {/* Direct WhatsApp Instant Order Button */}
+          {/* Quick WhatsApp Inquiry for this outfit */}
           <a
             href={`https://wa.me/${cleanPhone}?text=${encodeURIComponent(
-              `Hello AR Fashion House, I want to confirm order for "${product.name}" (Colour: ${selectedColour}, Size: ${activeVariant?.size || 'Standard'}, Qty: ${quantity}). Please confirm delivery address.`
+              `Hello AR Fashion House, I want to inquire about "${product.name}" in Colour: ${selectedColour}, Size: ${activeVariant?.size || 'Standard'}.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3.5 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white font-extrabold text-sm rounded-2xl shadow-md flex items-center justify-center gap-2 transition-colors"
+            className="w-full py-3.5 rounded-2xl font-bold text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-300/80 flex items-center justify-center gap-2 transition-all"
           >
-            <MessageSquare size={18} />
-            <span>Order Directly via WhatsApp</span>
+            <Phone size={15} className="text-emerald-700" />
+            <span>Chat on WhatsApp about this piece</span>
           </a>
         </div>
 
-        {/* Benefits Highlights */}
-        <div className="border-t border-stone-100 pt-5 space-y-2.5 text-xs text-slate-600">
-          <div className="flex items-center gap-3">
-            <Truck size={16} className="text-emerald-700 shrink-0" />
-            <span>Fast Express Dispatch: 24-48 hrs in Dhaka; 2-4 days nationwide.</span>
+        {/* 5. Trust & Delivery Guarantees */}
+        <div className="pt-4 border-t border-stone-200 grid grid-cols-2 gap-4 text-xs text-slate-600">
+          <div className="flex items-center gap-2.5">
+            <Truck size={17} className="text-emerald-700 shrink-0" />
+            <span>Nationwide Express Delivery</span>
           </div>
-          <div className="flex items-center gap-3">
-            <ShieldCheck size={16} className="text-emerald-700 shrink-0" />
-            <span>7-Day Replacement Guarantee if garment sizing needs adjustment.</span>
+          <div className="flex items-center gap-2.5">
+            <RotateCcw size={17} className="text-emerald-700 shrink-0" />
+            <span>7-Day Easy Size Exchange</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck size={17} className="text-emerald-700 shrink-0" />
+            <span>100% Authentic Handloom & Silks</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Sparkles size={17} className="text-emerald-700 shrink-0" />
+            <span>Handcrafted Embroidery</span>
           </div>
         </div>
 
-        {/* Fabric & Care */}
-        <div className="border-t border-stone-100 pt-5 space-y-2">
-          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-            Fabric & Craftsmanship Details
-          </h4>
+        {/* 6. Product Description */}
+        <div className="pt-4 border-t border-stone-200 space-y-2">
+          <h3 className="font-bold text-slate-900 text-sm">Product Description & Care:</h3>
           <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
-            {product.description || 'Masterpiece clothing tailored by AR Fashion House.'}
+            {product.description}
           </p>
         </div>
       </div>

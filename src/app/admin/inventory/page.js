@@ -32,7 +32,12 @@ export default function AdminInventoryPage() {
       const url = selectedStockFilter !== 'all'
         ? `/api/inventory?status=${selectedStockFilter}`
         : '/api/inventory';
-      const res = await fetch(url);
+
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(url, { headers, credentials: 'include' });
       const data = await res.json();
       if (data.success && data.variants) {
         setVariants(data.variants);
@@ -59,9 +64,14 @@ export default function AdminInventoryPage() {
 
     setSavingStock(true);
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch('/api/inventory', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           variantId: editVariant.id,
           stock: newStockVal,
