@@ -93,7 +93,16 @@ export default function AdminCategoriesPage() {
     body.append('files', file);
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body,
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
       setFormData((prev) => ({ ...prev, image: data.urls[0] }));
@@ -362,28 +371,53 @@ export default function AdminCategoriesPage() {
                 </div>
 
                 {/* Category Photograph */}
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <label className="font-bold text-slate-700 block">Category Photograph</label>
                   <div className="flex items-center gap-3">
-                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border shrink-0">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border shrink-0 relative group">
                       {formData.image ? (
-                        <img src={formData.image} alt="" className="w-full h-full object-cover" />
+                        <>
+                          <img src={formData.image} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setFormData((prev) => ({ ...prev, image: '' }))}
+                            className="absolute inset-0 bg-black/60 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          >
+                            Remove
+                          </button>
+                        </>
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
                           No Photo
                         </div>
                       )}
                     </div>
-                    <label className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors">
-                      <Upload size={14} />
-                      <span>{uploadingImage ? 'Uploading...' : 'Upload Photograph'}</span>
+                    <div className="flex-1 space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer transition-colors">
+                          <Upload size={13} />
+                          <span>{uploadingImage ? 'Uploading...' : 'Upload File'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                          />
+                        </label>
+                        {formData.image && (
+                          <span className="text-[11px] text-emerald-600 font-semibold truncate max-w-[180px]">
+                            Image ready
+                          </span>
+                        )}
+                      </div>
                       <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
+                        type="url"
+                        placeholder="Or paste image URL (Unsplash, CDN, etc.)..."
+                        value={formData.image || ''}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                       />
-                    </label>
+                    </div>
                   </div>
                 </div>
 

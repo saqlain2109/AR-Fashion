@@ -28,6 +28,7 @@ export default function ImageUploader({
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFilterColour, setSelectedFilterColour] = useState('ALL');
   const [uploadTargetColour, setUploadTargetColour] = useState('');
+  const [directUrlInput, setDirectUrlInput] = useState('');
   const fileInputRef = useRef(null);
 
   // Normalize images to always be objects: { url, colour }
@@ -91,8 +92,14 @@ export default function ImageUploader({
 
     try {
       setUploadProgress(40);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch('/api/upload', {
         method: 'POST',
+        headers,
+        credentials: 'include',
         body: formData,
       });
 
@@ -180,6 +187,20 @@ export default function ImageUploader({
       colour: newColour === '__ALL__' ? '' : newColour,
     };
     onChange(copy);
+  };
+
+  const handleAddDirectUrl = (e) => {
+    e?.preventDefault();
+    if (!directUrlInput || !directUrlInput.trim()) return;
+    const url = directUrlInput.trim();
+    const activeColourTag = uploadTargetColour || (selectedFilterColour !== 'ALL' && selectedFilterColour !== '__UNTAGGED__' ? selectedFilterColour : '');
+    const newObject = { url, colour: activeColourTag };
+    const combined = [...normalizedImages, newObject];
+    onChange(combined);
+    if (!mainImage && combined.length > 0) {
+      onMainImageChange(combined[0].url);
+    }
+    setDirectUrlInput('');
   };
 
   return (
@@ -295,6 +316,32 @@ export default function ImageUploader({
             Upload multiple photos. {uploadTargetColour ? `(Will be assigned to: "${uploadTargetColour}")` : '(Select a colour above or tag each image individually below)'}
           </p>
         </div>
+      </div>
+
+      {/* Or Paste Direct Image URL */}
+      <div className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+        <ImageIcon size={16} className="text-slate-400 shrink-0 ml-1" />
+        <input
+          type="url"
+          placeholder="Or paste external image URL (e.g. Unsplash, CDN, or web link)..."
+          value={directUrlInput}
+          onChange={(e) => setDirectUrlInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAddDirectUrl(e);
+            }
+          }}
+          className="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        />
+        <button
+          type="button"
+          onClick={handleAddDirectUrl}
+          disabled={!directUrlInput.trim()}
+          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-40"
+        >
+          Add URL
+        </button>
       </div>
 
       {/* Upload Progress Bar */}

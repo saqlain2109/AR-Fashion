@@ -75,12 +75,23 @@ export default function StoreHeader({ settings = null, content = null, categorie
   };
 
   const currencySym = activeSettings?.currencySymbol || '₹';
-  const rawAnnouncement = activeSettings?.announcementActive && activeSettings?.storeAnnouncement
-    ? activeSettings.storeAnnouncement
-    : (content?.announcementBar || `Special Festive Offer: FREE Delivery on orders over ${currencySym}2000 across India!`);
+  const showAnnouncement = activeSettings ? activeSettings.announcementActive !== false : true;
+  const rawAnnouncement = activeSettings?.storeAnnouncement
+    || content?.announcementBar
+    || `Special Festive Offer: FREE Delivery on orders over ${currencySym}2000 across India!`;
   const announcement = rawAnnouncement
     ? rawAnnouncement.replace(/[\uFFFD\?](?=\d)/g, currencySym).replace(/\uFFFD/g, currencySym)
     : '';
+
+  const businessName = activeSettings?.businessName || 'AR Fashion House';
+  const storeLogo = activeSettings?.storeLogo || null;
+  const initials = businessName
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'AR';
 
   const waPhone = activeSettings?.primaryPhone || '+917304396709';
   const cleanPhone = waPhone.replace(/[^0-9]/g, '');
@@ -88,31 +99,33 @@ export default function StoreHeader({ settings = null, content = null, categorie
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-xs">
       {/* 1. Top Luxury Announcement & Quick Info Bar */}
-      <div className="bg-[#0B132B] text-slate-300 text-[11px] font-medium py-2 px-4 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 truncate">
-            <Sparkles size={12} className="text-amber-400 shrink-0" />
-            <span className="truncate tracking-wide">{announcement}</span>
-          </div>
+      {showAnnouncement && (
+        <div className="bg-[#0B132B] text-slate-300 text-[11px] font-medium py-2 px-4 border-b border-slate-800">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 truncate">
+              <Sparkles size={12} className="text-amber-400 shrink-0" />
+              <span className="truncate tracking-wide">{announcement}</span>
+            </div>
 
-          <div className="hidden md:flex items-center gap-5 shrink-0 text-slate-400 font-medium text-[11px]">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <Truck size={13} />
-              <span>All-India Express Delivery</span>
-            </span>
-            <span className="text-slate-600">|</span>
-            <a
-              href={`https://wa.me/${cleanPhone}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-white transition-colors"
-            >
-              <Phone size={12} className="text-emerald-400" />
-              <span>Helpline: {waPhone}</span>
-            </a>
+            <div className="hidden md:flex items-center gap-5 shrink-0 text-slate-400 font-medium text-[11px]">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <Truck size={13} />
+                <span>All-India Express Delivery</span>
+              </span>
+              <span className="text-slate-600">|</span>
+              <a
+                href={`https://wa.me/${cleanPhone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 hover:text-white transition-colors"
+              >
+                <Phone size={12} className="text-emerald-400" />
+                <span>Helpline: {waPhone}</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 2. Main High-Fashion Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
@@ -127,13 +140,21 @@ export default function StoreHeader({ settings = null, content = null, categorie
           </button>
 
           <Link href="/" className="flex items-center gap-3 group">
-            {/* Monogram Seal */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 border border-amber-500/30 text-amber-300 font-serif-luxury font-bold text-lg flex items-center justify-center shadow-md tracking-wider group-hover:border-amber-400 transition-all">
-              AR
-            </div>
+            {/* Logo or Monogram Seal */}
+            {storeLogo ? (
+              <img
+                src={storeLogo}
+                alt={businessName}
+                className="w-10 h-10 object-contain rounded-xl shadow-md border border-slate-200 bg-white"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 border border-amber-500/30 text-amber-300 font-serif-luxury font-bold text-lg flex items-center justify-center shadow-md tracking-wider group-hover:border-amber-400 transition-all">
+                {initials}
+              </div>
+            )}
             <div className="leading-tight">
               <span className="font-serif-luxury font-black text-slate-950 text-lg sm:text-xl tracking-tight block">
-                AR FASHION HOUSE
+                {businessName}
               </span>
               <span className="text-[9px] font-extrabold text-emerald-800 uppercase tracking-[0.2em] block">
                 Traditional &bull; Contemporary
@@ -194,8 +215,8 @@ export default function StoreHeader({ settings = null, content = null, categorie
                         {c.image ? (
                           <img src={c.image} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-400">
-                            AR
+                          <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500 font-bold">
+                            {c.name ? c.name.slice(0, 2).toUpperCase() : initials}
                           </div>
                         )}
                       </div>
@@ -276,7 +297,7 @@ export default function StoreHeader({ settings = null, content = null, categorie
 
           {/* Direct WhatsApp Order Pill */}
           <a
-            href={`https://wa.me/${cleanPhone}?text=Hello%20AR%20Fashion%20House,%20I%20want%20to%20place%20an%20order.`}
+            href={`https://wa.me/${cleanPhone}?text=Hello%20${encodeURIComponent(businessName)},%20I%20want%20to%20place%20an%20order.`}
             target="_blank"
             rel="noopener noreferrer"
             title="Chat & Order directly on WhatsApp"
@@ -363,7 +384,7 @@ export default function StoreHeader({ settings = null, content = null, categorie
 
           {/* Mobile WhatsApp Quick Call Banner */}
           <a
-            href={`https://wa.me/${cleanPhone}?text=Hello%20AR%20Fashion%20House,%20I%20have%20an%20order%20inquiry.`}
+            href={`https://wa.me/${cleanPhone}?text=Hello%20${encodeURIComponent(businessName)},%20I%20have%20an%20order%20inquiry.`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-3 bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm"

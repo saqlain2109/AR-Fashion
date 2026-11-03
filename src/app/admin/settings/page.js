@@ -56,7 +56,16 @@ export default function AdminSettingsPage() {
     body.append('files', file);
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body,
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
       setSettings((prev) => ({ ...prev, storeLogo: data.urls[0] }));
@@ -181,21 +190,44 @@ export default function AdminSettingsPage() {
             </div>
 
             {/* Store Logo */}
-            <div className="md:col-span-2 space-y-1.5 pt-2">
+            <div className="md:col-span-2 space-y-2 pt-2">
               <label className="font-bold text-slate-700 block">Store Logo</label>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 relative group">
                   {settings.storeLogo ? (
-                    <img src={settings.storeLogo} alt="Logo" className="w-full h-full object-contain p-2" />
+                    <>
+                      <img src={settings.storeLogo} alt="Logo" className="w-full h-full object-contain p-2" />
+                      <button
+                        type="button"
+                        onClick={() => setSettings((prev) => ({ ...prev, storeLogo: null }))}
+                        className="absolute inset-0 bg-black/60 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                      >
+                        Remove
+                      </button>
+                    </>
                   ) : (
                     <span className="text-[10px] text-slate-400 font-bold">No Logo</span>
                   )}
                 </div>
-                <label className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>{uploadingLogo ? 'Uploading...' : 'Upload New Logo'}</span>
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
-                </label>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors text-xs">
+                      <Upload size={14} />
+                      <span>{uploadingLogo ? 'Uploading...' : 'Upload Logo File'}</span>
+                      <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                    </label>
+                    {settings.storeLogo && (
+                      <span className="text-[11px] text-emerald-600 font-semibold">Custom logo active</span>
+                    )}
+                  </div>
+                  <input
+                    type="url"
+                    placeholder="Or enter logo URL (e.g. https://... or /uploads/...)..."
+                    value={settings.storeLogo || ''}
+                    onChange={(e) => setSettings({ ...settings, storeLogo: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono"
+                  />
+                </div>
               </div>
             </div>
           </div>

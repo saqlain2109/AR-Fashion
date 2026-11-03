@@ -7,6 +7,18 @@ export default function StoreFooter({ settings = null }) {
   const secondaryPhone = settings?.secondaryPhone || '+918080010107';
   const email = settings?.businessEmail || 'contact@arfashionhouse.com';
   const address = settings?.address;
+  const storeLogo = settings?.storeLogo;
+  const facebookUrl = settings?.facebookUrl;
+  const instagramUrl = settings?.instagramUrl;
+  const whatsappUrl = settings?.whatsappUrl;
+
+  const initials = businessName
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'AR';
 
   const cleanPrimary = primaryPhone.replace(/[^0-9]/g, '');
   const cleanSecondary = secondaryPhone ? secondaryPhone.replace(/[^0-9]/g, '') : null;
@@ -18,9 +30,17 @@ export default function StoreFooter({ settings = null }) {
         {/* Brand Col */}
         <div className="space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-emerald-950 border border-amber-500/40 text-amber-300 font-serif-luxury font-bold text-base flex items-center justify-center">
-              AR
-            </div>
+            {storeLogo ? (
+              <img
+                src={storeLogo}
+                alt={businessName}
+                className="w-9 h-9 object-contain rounded-xl bg-white p-1 border border-slate-700"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-emerald-950 border border-amber-500/40 text-amber-300 font-serif-luxury font-bold text-base flex items-center justify-center">
+                {initials}
+              </div>
+            )}
             <div>
               <span className="font-serif-luxury font-bold text-white text-base block tracking-tight">
                 {businessName}
@@ -161,6 +181,45 @@ export default function StoreFooter({ settings = null }) {
               <div className="flex items-start gap-2.5 pt-1">
                 <MapPin size={14} className="text-emerald-400 shrink-0 mt-0.5" />
                 <span className="text-slate-400 leading-relaxed">{address}</span>
+              </div>
+            )}
+
+            {/* Social Media Links */}
+            {(facebookUrl || instagramUrl || whatsappUrl) && (
+              <div className="pt-2 flex items-center gap-3">
+                {whatsappUrl && (
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-400 hover:text-white hover:bg-emerald-900 transition-colors"
+                    title="WhatsApp"
+                  >
+                    <MessageCircle size={13} />
+                  </a>
+                )}
+                {facebookUrl && (
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-blue-900/50 transition-colors"
+                    title="Facebook"
+                  >
+                    <span className="font-bold text-[10px] px-0.5">fb</span>
+                  </a>
+                )}
+                {instagramUrl && (
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-pink-900/50 transition-colors"
+                    title="Instagram"
+                  >
+                    <span className="font-bold text-[10px] px-0.5">ig</span>
+                  </a>
+                )}
               </div>
             )}
           </div>

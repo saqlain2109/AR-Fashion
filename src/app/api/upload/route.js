@@ -7,6 +7,8 @@ import path from 'path';
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req) {
   try {
     const authUser = getAuthUser(req);
@@ -21,9 +23,13 @@ export async function POST(req) {
       return NextResponse.json({ error: 'No files uploaded.' }, { status: 400 });
     }
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    const publicUploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    const rootUploadsDir = path.join(process.cwd(), 'uploads');
+    if (!fs.existsSync(publicUploadsDir)) {
+      fs.mkdirSync(publicUploadsDir, { recursive: true });
+    }
+    if (!fs.existsSync(rootUploadsDir)) {
+      fs.mkdirSync(rootUploadsDir, { recursive: true });
     }
 
     const uploadedUrls = [];
@@ -52,9 +58,17 @@ export async function POST(req) {
       const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
       const fileName = `${uniqueSuffix}-${originalName}`;
-      const filePath = path.join(uploadsDir, fileName);
+      
+      const filePathPublic = path.join(publicUploadsDir, fileName);
+      const filePathRoot = path.join(rootUploadsDir, fileName);
 
-      fs.writeFileSync(filePath, buffer);
+      fs.writeFileSync(filePathPublic, buffer);
+      try {
+        fs.writeFileSync(filePathRoot, buffer);
+      } catch (e) {
+        // Fallback if root not writable
+      }
+
       uploadedUrls.push(`/uploads/${fileName}`);
     }
 

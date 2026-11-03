@@ -154,7 +154,9 @@ export async function POST(req) {
     }
 
     // Determine primary image
-    const primaryImg = mainImage || (images.length > 0 ? images[0] : null);
+    const primaryImg = typeof mainImage === 'string' && mainImage.trim() !== ''
+      ? mainImage.trim()
+      : (images.length > 0 ? (typeof images[0] === 'string' ? images[0] : images[0]?.url) : null);
 
     // Save product, images and variants in a transaction
     const product = await prisma.$transaction(async (tx) => {

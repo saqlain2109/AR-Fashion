@@ -395,7 +395,7 @@ export default async function HomePage() {
               </h2>
               <p className="text-sm sm:text-base text-stone-300 leading-relaxed font-normal">
                 {content?.brandStoryText ||
-                  'At AR Fashion House, we celebrate the deep heritage of Bengal weaving, intricate zardozi needlework, and modern precision tailoring. Every piece in our boutique is individually inspected for seam integrity and fabric longevity.'}
+                  `At ${settings?.businessName || 'AR Fashion House'}, we celebrate authentic craftsmanship, exquisite needlework, and modern precision tailoring. Every piece in our boutique is individually inspected for seam integrity and fabric longevity.`}
               </p>
               <div className="pt-2 flex flex-wrap gap-4">
                 <Link
@@ -423,7 +423,7 @@ export default async function HomePage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
-                    AR Fashion House Atelier
+                    {settings?.businessName || 'AR Fashion House'} Atelier
                   </div>
                 )}
               </div>

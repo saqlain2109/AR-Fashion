@@ -12,6 +12,18 @@ export default function AdminLayoutClient({ children, serverUser = null, categor
 
   const [user, setUser] = useState(serverUser);
   const [checkingAuth, setCheckingAuth] = useState(!serverUser && !isLoginPage);
+  const [storeName, setStoreName] = useState('AR Fashion House');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.settings?.businessName) {
+          setStoreName(data.settings.businessName);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (isLoginPage) {
@@ -85,7 +97,7 @@ export default function AdminLayoutClient({ children, serverUser = null, categor
             <div className="flex items-center gap-2">
               <ShieldCheck size={20} className="text-emerald-600" />
               <span className="font-extrabold text-slate-900 text-sm tracking-tight hidden sm:inline">
-                AR Fashion House
+                {storeName}
               </span>
             </div>
             <span className="text-slate-300 hidden sm:inline">|</span>

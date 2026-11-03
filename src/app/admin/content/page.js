@@ -52,7 +52,16 @@ export default function AdminContentPage() {
     body.append('files', file);
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body,
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
       setContent((prev) => ({ ...prev, heroImage: data.urls[0] }));
@@ -73,7 +82,16 @@ export default function AdminContentPage() {
     body.append('files', file);
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body,
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
       setContent((prev) => ({ ...prev, brandStoryImage: data.urls[0] }));
@@ -191,23 +209,46 @@ export default function AdminContentPage() {
             </div>
 
             {/* Hero Image */}
-            <div className="space-y-1.5 pt-1">
+            <div className="space-y-2 pt-1">
               <label className="font-bold text-slate-700 block">Hero Background / Banner Image</label>
               <div className="flex items-center gap-4">
-                <div className="w-32 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                <div className="w-32 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative group">
                   {content.heroImage ? (
-                    <img src={content.heroImage} alt="Hero" className="w-full h-full object-cover" />
+                    <>
+                      <img src={content.heroImage} alt="Hero" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setContent((prev) => ({ ...prev, heroImage: '' }))}
+                        className="absolute inset-0 bg-black/60 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                      >
+                        Remove
+                      </button>
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
                       No Banner
                     </div>
                   )}
                 </div>
-                <label className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>{uploadingHero ? 'Uploading...' : 'Upload Banner Photo'}</span>
-                  <input type="file" accept="image/*" onChange={handleHeroImageUpload} className="hidden" />
-                </label>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors text-xs">
+                      <Upload size={14} />
+                      <span>{uploadingHero ? 'Uploading...' : 'Upload Banner Photo'}</span>
+                      <input type="file" accept="image/*" onChange={handleHeroImageUpload} className="hidden" />
+                    </label>
+                    {content.heroImage && (
+                      <span className="text-[11px] text-emerald-600 font-semibold">Banner configured</span>
+                    )}
+                  </div>
+                  <input
+                    type="url"
+                    placeholder="Or enter banner URL (e.g. https://... or /uploads/...)..."
+                    value={content.heroImage || ''}
+                    onChange={(e) => setContent((prev) => ({ ...prev, heroImage: e.target.value }))}
+                    className="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono"
+                  />
+                </div>
               </div>
             </div>
 
@@ -290,23 +331,46 @@ export default function AdminContentPage() {
               />
             </div>
 
-            <div className="space-y-1.5 pt-1">
+            <div className="space-y-2 pt-1">
               <label className="font-bold text-slate-700 block">Brand Feature Image</label>
               <div className="flex items-center gap-4">
-                <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative group">
                   {content.brandStoryImage ? (
-                    <img src={content.brandStoryImage} alt="" className="w-full h-full object-cover" />
+                    <>
+                      <img src={content.brandStoryImage} alt="" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setContent((prev) => ({ ...prev, brandStoryImage: '' }))}
+                        className="absolute inset-0 bg-black/60 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                      >
+                        Remove
+                      </button>
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
                       No Photo
                     </div>
                   )}
                 </div>
-                <label className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>{uploadingBrand ? 'Uploading...' : 'Upload Brand Image'}</span>
-                  <input type="file" accept="image/*" onChange={handleBrandImageUpload} className="hidden" />
-                </label>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition-colors text-xs">
+                      <Upload size={14} />
+                      <span>{uploadingBrand ? 'Uploading...' : 'Upload Brand Image'}</span>
+                      <input type="file" accept="image/*" onChange={handleBrandImageUpload} className="hidden" />
+                    </label>
+                    {content.brandStoryImage && (
+                      <span className="text-[11px] text-emerald-600 font-semibold">Image ready</span>
+                    )}
+                  </div>
+                  <input
+                    type="url"
+                    placeholder="Or enter image URL (e.g. https://... or /uploads/...)..."
+                    value={content.brandStoryImage || ''}
+                    onChange={(e) => setContent((prev) => ({ ...prev, brandStoryImage: e.target.value }))}
+                    className="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono"
+                  />
+                </div>
               </div>
             </div>
           </div>
