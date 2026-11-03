@@ -241,20 +241,6 @@ export default function StoreHeader({ settings = null, content = null, categorie
           </div>
 
           <Link
-            href="/shop?category=mens-panjabi-kurta"
-            className="hover:text-emerald-700 transition-colors py-2"
-          >
-            Panjabis
-          </Link>
-
-          <Link
-            href="/shop?category=womens-sarees-anarkalis"
-            className="hover:text-emerald-700 transition-colors py-2"
-          >
-            Sarees & Kurtis
-          </Link>
-
-          <Link
             href="/#about"
             className="hover:text-emerald-700 transition-colors py-2 text-slate-600"
           >

@@ -71,7 +71,7 @@ export default function UniversalDataTable({
 
   // 5. Freeze Header & Columns (Rule 2.A.3 & 2.A.4)
   const [freezeHeader, setFreezeHeader] = useState(true);
-  const [freezeColumns, setFreezeColumns] = useState(true);
+  const [freezeColumns, setFreezeColumns] = useState(false);
 
   // 6. Auto-Wrap Long Data (Rule 2.A.7)
   const [autoWrap, setAutoWrap] = useState(false);
@@ -218,7 +218,7 @@ export default function UniversalDataTable({
     setSearchTerm('');
     setDensity('normal');
     setFreezeHeader(true);
-    setFreezeColumns(true);
+    setFreezeColumns(false);
     setAutoWrap(false);
     setSortConfig({ key: defaultSortKey || columns[0]?.key || '', direction: defaultSortDir });
     setCurrentPage(1);
@@ -947,7 +947,7 @@ export default function UniversalDataTable({
           <thead className={freezeHeader ? 'sticky top-0 z-20 bg-slate-100/95 backdrop-blur-xs shadow-xs' : 'bg-slate-100'}>
             <tr className="border-b border-slate-200 text-slate-600 text-xs font-bold tracking-wider uppercase">
               {/* Index Column (optional pinned) */}
-              <th className={`py-3 px-3 text-center w-12 ${freezeColumns ? 'sticky left-0 z-30 bg-slate-100' : ''}`}>
+              <th className={`py-3 px-3 text-center w-12 ${freezeColumns ? 'sm:sticky sm:left-0 z-30 bg-slate-100' : ''}`}>
                 #
               </th>
 
@@ -962,7 +962,7 @@ export default function UniversalDataTable({
                     onClick={() => col.sortable !== false && handleSort(col.key)}
                     className={`py-3 px-3.5 select-none transition-colors ${
                       col.sortable !== false ? 'cursor-pointer hover:bg-slate-200/70' : ''
-                    } ${isFirstCol ? 'sticky left-12 z-30 bg-slate-100 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]' : ''}`}
+                    } ${isFirstCol ? 'sm:sticky sm:left-12 z-30 bg-slate-100 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]' : ''}`}
                   >
                     <div className="flex items-center gap-1.5">
                       <span>{col.label}</span>
@@ -987,7 +987,7 @@ export default function UniversalDataTable({
               {/* Mandatory Dedicated Actions Column (Rule 2.C) */}
               <th
                 className={`py-3 px-4 text-center w-36 ${
-                  freezeColumns ? 'sticky right-0 z-30 bg-slate-100 shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.1)]' : ''
+                  freezeColumns ? 'sm:sticky sm:right-0 z-30 bg-slate-100 shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.1)]' : ''
                 }`}
               >
                 Actions
@@ -1019,7 +1019,7 @@ export default function UniversalDataTable({
                     <td
                       className={`text-center font-mono text-xs text-slate-400 font-semibold ${
                         densityStyles[density]
-                      } ${freezeColumns ? 'sticky left-0 z-10 bg-white group-hover:bg-slate-50' : ''}`}
+                      } ${freezeColumns ? 'sm:sticky sm:left-0 z-10 bg-white group-hover:bg-slate-50' : ''}`}
                     >
                       {absoluteIdx}
                     </td>
@@ -1034,7 +1034,7 @@ export default function UniversalDataTable({
                             autoWrap ? 'whitespace-normal break-words' : 'truncate max-w-[260px]'
                           } ${
                             isFirstCol
-                              ? 'sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)] font-semibold text-slate-800'
+                              ? 'sm:sticky sm:left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)] font-semibold text-slate-800'
                               : 'text-slate-600'
                           }`}
                         >
@@ -1047,7 +1047,7 @@ export default function UniversalDataTable({
                     <td
                       className={`text-center ${densityStyles[density]} ${
                         freezeColumns
-                          ? 'sticky right-0 z-10 bg-white group-hover:bg-slate-50 shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.06)]'
+                          ? 'sm:sticky sm:right-0 z-10 bg-white group-hover:bg-slate-50 shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.06)]'
                           : ''
                       }`}
                     >
