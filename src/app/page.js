@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import StoreHeader from '@/components/store/StoreHeader';
 import StoreFooter from '@/components/store/StoreFooter';
-import { FALLBACK_PRODUCT_IMAGE } from '@/lib/imageUtils';
+import StoreImage from '@/components/ui/StoreImage';
 import {
   ArrowRight,
   Sparkles,
@@ -182,12 +182,9 @@ export default async function HomePage() {
               >
                 <div className="aspect-[4/5] w-full overflow-hidden bg-stone-100 relative">
                   {cat.image ? (
-                    <img
+                    <StoreImage
                       src={cat.image}
                       alt={cat.name}
-                      onError={(e) => {
-                        e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
-                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
@@ -248,12 +245,9 @@ export default async function HomePage() {
                     >
                       <div className="aspect-[3/4] w-full overflow-hidden bg-stone-100 relative">
                         {prod.mainImage ? (
-                          <img
+                          <StoreImage
                             src={prod.mainImage}
                             alt={prod.name}
-                            onError={(e) => {
-                              e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
-                            }}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
@@ -359,12 +353,9 @@ export default async function HomePage() {
                 >
                   <div className="aspect-[3/4] w-full overflow-hidden bg-stone-100 relative">
                     {prod.mainImage && (
-                      <img
+                      <StoreImage
                         src={prod.mainImage}
                         alt={prod.name}
-                        onError={(e) => {
-                          e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
-                        }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     )}
