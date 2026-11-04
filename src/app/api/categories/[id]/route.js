@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
@@ -44,6 +45,10 @@ export async function PUT(req, { params }) {
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {}
+
     return NextResponse.json({ success: true, category: updated });
   } catch (error) {
     console.error('Update category error:', error);
@@ -70,6 +75,11 @@ export async function DELETE(req, { params }) {
     }
 
     await prisma.category.delete({ where: { id } });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {}
+
     return NextResponse.json({ success: true, message: 'Category deleted successfully' });
   } catch (error) {
     console.error('Delete category error:', error);

@@ -17,6 +17,7 @@ import {
   Camera,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { FALLBACK_PRODUCT_IMAGE } from '@/lib/imageUtils';
 
 export default function ProductDetailClient({ product, settings }) {
   const { addToCart, setDrawerOpen } = useCart();
@@ -158,6 +159,9 @@ export default function ProductDetailClient({ product, settings }) {
             key={activeImage} // Key triggers smooth transition on colour switch
             src={activeImage}
             alt={`${product.name} in ${selectedColour}`}
+            onError={(e) => {
+              e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+            }}
             className="w-full h-full object-cover transition-all duration-500 animate-fade-in group-hover:scale-105"
           />
 
@@ -215,7 +219,14 @@ export default function ProductDetailClient({ product, settings }) {
                       : 'border-stone-200 opacity-70 hover:opacity-100 hover:border-slate-400'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img
+                    src={img}
+                    alt=""
+                    onError={(e) => {
+                      e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                    }}
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               ))}
             </div>

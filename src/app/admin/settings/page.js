@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { compressImageFile } from '@/lib/imageUtils';
 import {
   Settings,
   Save,
@@ -52,10 +53,26 @@ export default function AdminSettingsPage() {
     if (!file) return;
 
     setUploadingLogo(true);
-    const body = new FormData();
-    body.append('files', file);
+    setErrorMessage('');
 
     try {
+      // 1. Fast client-side compression to lightweight Data URL
+      try {
+        const compressed = await compressImageFile(file, 600, 0.9);
+        if (compressed) {
+          setSettings((prev) => ({ ...prev, storeLogo: compressed }));
+          showToast('Logo uploaded!');
+          setUploadingLogo(false);
+          return;
+        }
+      } catch (clientErr) {
+        console.warn('Logo client compression fallback:', clientErr);
+      }
+
+      // 2. Server fallback
+      const body = new FormData();
+      body.append('files', file);
+
       const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
       const headers = {};
       if (token) headers['Authorization'] = `Bearer ${token}`;

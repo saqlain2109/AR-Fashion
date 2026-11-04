@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 
@@ -84,6 +85,10 @@ export async function PUT(req) {
         brandStoryImage: brandStoryImage || null,
       },
     });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {}
 
     return NextResponse.json({ success: true, content: updated });
   } catch (error) {

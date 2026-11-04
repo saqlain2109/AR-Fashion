@@ -15,12 +15,15 @@ import {
   ArrowRight,
   Eye,
   RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [seeding, setSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState('');
   const [currencySymbol, setCurrencySymbol] = useState(
     (typeof window !== 'undefined' && (window.__STORE_CURRENCY_SYMBOL__ || localStorage.getItem('ar_currency_symbol'))) || '₹'
   );
@@ -54,6 +57,31 @@ export default function AdminDashboardPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSeedCatalog = async () => {
+    try {
+      setSeeding(true);
+      setSeedMessage('');
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/seed', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Seed failed');
+      setSeedMessage('Sample boutique catalog loaded successfully!');
+      await fetchStats();
+      setTimeout(() => setSeedMessage(''), 5000);
+    } catch (err) {
+      alert(err.message || 'Failed to seed catalog');
+    } finally {
+      setSeeding(false);
     }
   };
 
@@ -132,6 +160,16 @@ export default function AdminDashboardPage() {
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
 
+          <button
+            onClick={handleSeedCatalog}
+            disabled={seeding}
+            className="flex items-center gap-1.5 px-3 py-2 border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+            title="Populate initial categories, sample products and store settings"
+          >
+            <Sparkles size={14} className={seeding ? 'animate-spin text-emerald-600' : 'text-amber-500'} />
+            <span>{seeding ? 'Loading Catalog...' : 'Seed Sample Catalog'}</span>
+          </button>
+
           <Link
             href="/admin/products/new"
             className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-700/20 transition-all"
@@ -141,6 +179,38 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
       </div>
+
+      {seedMessage && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+          <span>{seedMessage}</span>
+        </div>
+      )}
+
+      {/* Zero Catalog Alert Banner (Shown if fresh deployment or wiped DB) */}
+      {!loading && stats && stats.totalProducts === 0 && stats.totalCategories === 0 && (
+        <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+              <AlertTriangle size={20} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-amber-900">Live Database Is Fresh & Empty</h3>
+              <p className="text-xs text-amber-700">
+                Total products and categories are currently 0. You can populate the entire boutique catalog with 1 click.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleSeedCatalog}
+            disabled={seeding}
+            className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-md transition-all shrink-0 flex items-center gap-2"
+          >
+            <Sparkles size={14} />
+            <span>{seeding ? 'Seeding Catalog...' : '⚡ Populate Full Boutique Catalog'}</span>
+          </button>
+        </div>
+      )}
 
       {/* 1. Mandatory 6 Primary Metric Cards (Rule A) */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

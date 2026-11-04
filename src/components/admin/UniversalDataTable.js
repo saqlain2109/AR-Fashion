@@ -70,7 +70,7 @@ export default function UniversalDataTable({
   const [density, setDensity] = useState('normal');
 
   // 5. Freeze Header & Columns (Rule 2.A.3 & 2.A.4)
-  const [freezeHeader, setFreezeHeader] = useState(true);
+  const [freezeHeader, setFreezeHeader] = useState(false);
   const [freezeColumns, setFreezeColumns] = useState(false);
 
   // 6. Auto-Wrap Long Data (Rule 2.A.7)
@@ -217,7 +217,7 @@ export default function UniversalDataTable({
     setActiveFilters([]);
     setSearchTerm('');
     setDensity('normal');
-    setFreezeHeader(true);
+    setFreezeHeader(false);
     setFreezeColumns(false);
     setAutoWrap(false);
     setSortConfig({ key: defaultSortKey || columns[0]?.key || '', direction: defaultSortDir });
@@ -940,11 +940,12 @@ export default function UniversalDataTable({
       {/* 7. Actual Table Grid */}
       <div
         ref={tableContainerRef}
-        className="flex-1 overflow-x-auto overflow-y-auto max-h-[68vh] scrollbar-thin relative"
+        className="flex-1 overflow-x-auto overflow-y-auto max-h-[68vh] scrollbar-thin relative touch-pan-x"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <table className="w-full border-collapse text-left">
           {/* Table Header */}
-          <thead className={freezeHeader ? 'sticky top-0 z-20 bg-slate-100/95 backdrop-blur-xs shadow-xs' : 'bg-slate-100'}>
+          <thead className={freezeHeader ? 'sm:sticky top-0 z-20 bg-slate-100/95 backdrop-blur-xs shadow-xs' : 'bg-slate-100'}>
             <tr className="border-b border-slate-200 text-slate-600 text-xs font-bold tracking-wider uppercase">
               {/* Index Column (optional pinned) */}
               <th className={`py-3 px-3 text-center w-12 ${freezeColumns ? 'sm:sticky sm:left-0 z-30 bg-slate-100' : ''}`}>

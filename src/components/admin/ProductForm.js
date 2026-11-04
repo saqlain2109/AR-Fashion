@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import ImageUploader from './ImageUploader';
 import VariantManager from './VariantManager';
 import Portal from '@/components/ui/Portal';
+import { FALLBACK_PRODUCT_IMAGE } from '@/lib/imageUtils';
 import {
   Save,
   CheckCircle,
@@ -557,6 +558,9 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                         <img
                           src={previewActiveImage}
                           alt={name || 'Product'}
+                          onError={(e) => {
+                            e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                          }}
                           className="w-full h-full object-cover transition-all duration-300"
                         />
                       ) : (
@@ -569,8 +573,8 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                     {images.length > 1 && (
                       <div className="flex gap-2 overflow-x-auto pb-1">
                         {images.map((img, i) => {
-                          const imgUrl = typeof img === 'string' ? img : img.url;
-                          const imgColour = typeof img === 'object' ? img.colour : '';
+                          const imgUrl = typeof img === 'string' ? img : (img?.url || FALLBACK_PRODUCT_IMAGE);
+                          const imgColour = typeof img === 'object' ? (img?.colour || '') : '';
                           const isSelected = previewActiveImage === imgUrl;
                           return (
                             <button
@@ -581,7 +585,14 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                                 isSelected ? 'border-emerald-600 ring-2 ring-emerald-500/30' : 'border-slate-200 hover:border-slate-400'
                               }`}
                             >
-                              <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                              <img
+                                src={imgUrl}
+                                alt=""
+                                onError={(e) => {
+                                  e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                                }}
+                                className="w-full h-full object-cover"
+                              />
                               {imgColour && (
                                 <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-[8px] text-white font-bold truncate px-1 text-center py-0.5">
                                   {imgColour}

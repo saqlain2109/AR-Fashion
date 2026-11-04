@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import StoreHeader from '@/components/store/StoreHeader';
 import StoreFooter from '@/components/store/StoreFooter';
+import { FALLBACK_PRODUCT_IMAGE } from '@/lib/imageUtils';
 import {
   ArrowRight,
   Sparkles,
@@ -184,6 +185,9 @@ export default async function HomePage() {
                     <img
                       src={cat.image}
                       alt={cat.name}
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
@@ -247,6 +251,9 @@ export default async function HomePage() {
                           <img
                             src={prod.mainImage}
                             alt={prod.name}
+                            onError={(e) => {
+                              e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                            }}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
@@ -298,19 +305,19 @@ export default async function HomePage() {
                           )}
                         </div>
 
-                        <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
-                          <div>
-                            <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
+                        <div className="pt-2.5 mt-2.5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-1.5">
+                          <div className="flex flex-wrap items-baseline gap-1">
+                            <span className="text-sm sm:text-base font-black text-slate-900 font-serif-luxury">
                               {formatPrice(prod.sellingPrice, currencySymbol)}
                             </span>
                             {prod.originalPrice && prod.originalPrice > prod.sellingPrice && (
-                              <span className="text-xs text-slate-400 line-through ml-1.5">
+                              <span className="text-[10px] sm:text-xs text-slate-400 line-through">
                                 {formatPrice(prod.originalPrice, currencySymbol)}
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] font-bold text-emerald-700 group-hover:underline">
-                            Select Size &rarr;
+                          <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md group-hover:bg-emerald-100 transition-colors shrink-0">
+                            View &rarr;
                           </span>
                         </div>
                       </div>
@@ -355,6 +362,9 @@ export default async function HomePage() {
                       <img
                         src={prod.mainImage}
                         alt={prod.name}
+                        onError={(e) => {
+                          e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                        }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     )}
@@ -368,12 +378,12 @@ export default async function HomePage() {
                         {prod.name}
                       </h3>
                     </div>
-                    <div className="pt-3 mt-3 border-t border-stone-100 flex items-baseline justify-between">
-                      <span className="text-base sm:text-lg font-black text-slate-900 font-serif-luxury">
+                    <div className="pt-2.5 mt-2.5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-1.5">
+                      <span className="text-sm sm:text-base font-black text-slate-900 font-serif-luxury">
                         {formatPrice(prod.sellingPrice, currencySymbol)}
                       </span>
-                      <span className="text-[11px] font-bold text-emerald-700 group-hover:underline">
-                        Order &rarr;
+                      <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md group-hover:bg-emerald-100 transition-colors shrink-0">
+                        View &rarr;
                       </span>
                     </div>
                   </div>

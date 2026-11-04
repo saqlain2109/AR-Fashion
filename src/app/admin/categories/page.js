@@ -13,6 +13,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { compressImageFile } from '@/lib/imageUtils';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -89,10 +90,24 @@ export default function AdminCategoriesPage() {
 
     setUploadingImage(true);
     setModalError('');
-    const body = new FormData();
-    body.append('files', file);
 
     try {
+      // 1. Fast client-side compression to lightweight Data URL
+      try {
+        const compressed = await compressImageFile(file, 800, 0.85);
+        if (compressed) {
+          setFormData((prev) => ({ ...prev, image: compressed }));
+          setUploadingImage(false);
+          return;
+        }
+      } catch (clientErr) {
+        console.warn('Category image client compression fallback:', clientErr);
+      }
+
+      // 2. Server fallback
+      const body = new FormData();
+      body.append('files', file);
+
       const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
       const headers = {};
       if (token) headers['Authorization'] = `Bearer ${token}`;

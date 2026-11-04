@@ -10,7 +10,7 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
-    "render:build": "prisma generate && prisma db push && next build"
+    "render:build": "prisma generate && prisma db push && node prisma/seed.js && next build"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

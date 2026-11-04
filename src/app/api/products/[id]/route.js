@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
@@ -178,6 +179,10 @@ export async function PUT(req, { params }) {
       });
     });
 
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {}
+
     return NextResponse.json({ success: true, product: updatedProduct });
   } catch (error) {
     console.error('Update product error:', error);
@@ -207,6 +212,10 @@ export async function DELETE(req, { params }) {
     });
 
     await prisma.product.delete({ where: { id } });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {}
 
     return NextResponse.json({ success: true, message: 'Product deleted successfully while preserving order history.' });
   } catch (error) {

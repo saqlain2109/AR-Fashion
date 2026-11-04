@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef, useMemo } from 'react';
+import { compressImageFile, FALLBACK_PRODUCT_IMAGE } from '@/lib/imageUtils';
 import {
   Upload,
   X,
@@ -92,22 +93,40 @@ export default function ImageUploader({
 
     try {
       setUploadProgress(40);
-      const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
-      const headers = {};
-      if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body: formData,
-      });
+      // 1. First attempt fast client-side compression to Data URLs
+      let finalUrls = [];
+      try {
+        const compressedList = [];
+        for (const file of validFiles) {
+          const compressed = await compressImageFile(file, 1200, 0.85);
+          compressedList.push(compressed);
+        }
+        if (compressedList.length === validFiles.length) {
+          finalUrls = compressedList;
+        }
+      } catch (clientErr) {
+        console.warn('Client compression fallback to server:', clientErr);
+      }
 
-      setUploadProgress(80);
-      const data = await res.json();
+      // 2. If client compression didn't produce urls, fallback to server upload
+      if (finalUrls.length === 0) {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('ar_admin_token') : null;
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Upload failed');
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers,
+          credentials: 'include',
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Upload failed');
+        }
+        finalUrls = data.urls || [];
       }
 
       setUploadProgress(100);
@@ -115,7 +134,7 @@ export default function ImageUploader({
       // Determine which colour to tag new images with
       const activeColourTag = uploadTargetColour || (selectedFilterColour !== 'ALL' && selectedFilterColour !== '__UNTAGGED__' ? selectedFilterColour : '');
 
-      const newObjects = data.urls.map((url) => ({
+      const newObjects = finalUrls.map((url) => ({
         url,
         colour: activeColourTag,
       }));
@@ -406,6 +425,9 @@ export default function ImageUploader({
                     <img
                       src={img.url}
                       alt={`Product photograph ${globalIdx + 1}`}
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
 

@@ -18,7 +18,8 @@ import {
 
 export default function StoreHeader({ settings = null, content = null, categories: initialCategories = null }) {
   const { totalCount, setDrawerOpen, settings: contextSettings } = useCart();
-  const activeSettings = settings || contextSettings;
+  const [headerSettings, setHeaderSettings] = useState(contextSettings || settings);
+  const activeSettings = headerSettings || contextSettings || settings;
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -26,6 +27,24 @@ export default function StoreHeader({ settings = null, content = null, categorie
   const [categories, setCategories] = useState(initialCategories || []);
   const [catDropdownOpen, setCatDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (contextSettings) {
+      setHeaderSettings(contextSettings);
+    } else if (settings) {
+      setHeaderSettings(settings);
+    }
+  }, [contextSettings, settings]);
+
+  useEffect(() => {
+    const handleSettingsUpdated = (e) => {
+      if (e?.detail) {
+        setHeaderSettings(e.detail);
+      }
+    };
+    window.addEventListener('store_settings_updated', handleSettingsUpdated);
+    return () => window.removeEventListener('store_settings_updated', handleSettingsUpdated);
+  }, []);
 
   useEffect(() => {
     if (initialCategories && initialCategories.length > 0) {

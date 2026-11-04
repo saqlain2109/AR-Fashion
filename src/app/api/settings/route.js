@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 
@@ -98,6 +99,12 @@ export async function PUT(req) {
         address: address || null,
       },
     });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {
+      // Ignored if outside request context
+    }
 
     return NextResponse.json({ success: true, settings: updated });
   } catch (error) {
