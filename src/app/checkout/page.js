@@ -13,12 +13,13 @@ import {
   AlertCircle,
   ArrowRight,
   CheckCircle2,
+  Crown,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { cart, subtotal, totalCount, clearCart, settings, currencySymbol, formatPrice } = useCart();
+  const { cart, subtotal, totalCount, clearCart, settings, currencySymbol } = useCart();
   const router = useRouter();
 
   // Delivery Form State
@@ -32,7 +33,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Shipping calculation (Flat All-India Express Delivery or Free Shipping above threshold)
+  // Shipping calculation
   const freeThreshold = settings?.freeShippingThreshold ?? 2000;
   const isFreeShipping = subtotal >= freeThreshold;
   const shippingCharge = isFreeShipping ? 0 : (settings?.shippingCharge ?? 100);
@@ -113,36 +114,37 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-[#070709] text-stone-100 overflow-x-hidden">
       <StoreHeader settings={settings} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="mb-8">
-          <span className="text-xs font-extrabold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
-            Secure WhatsApp Checkout
+          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-md border border-amber-500/30 inline-flex items-center gap-1.5">
+            <Crown size={12} className="text-amber-400" />
+            <span>Royal Concierge &bull; WhatsApp Checkout</span>
           </span>
-          <h1 className="font-serif-luxury text-3xl sm:text-4xl font-black text-slate-950 tracking-tight mt-2">
+          <h1 className="font-royal-title text-3xl sm:text-4xl font-black text-white tracking-tight mt-2">
             Delivery & Order Confirmation
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Provide your recipient information to generate your verified database order and connect with our concierge.
+          <p className="text-xs text-stone-400 mt-1">
+            Provide your recipient information to generate your verified database order and connect with our boutique concierge.
           </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold rounded-2xl flex items-center gap-2.5 animate-shake">
-            <AlertCircle size={18} className="text-rose-600 shrink-0" />
+          <div className="mb-6 p-4 bg-rose-950/80 border border-rose-800 text-rose-300 text-xs font-semibold rounded-2xl flex items-center gap-2.5 animate-shake">
+            <AlertCircle size={18} className="text-rose-400 shrink-0" />
             <span>{errorMessage}</span>
           </div>
         )}
 
         {cart.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-stone-200 p-12 text-center space-y-3 max-w-md mx-auto my-8">
-            <h3 className="font-serif-luxury font-bold text-slate-900 text-lg">Your shopping bag is empty</h3>
-            <p className="text-xs text-slate-500">Please choose your outfits before proceeding to checkout.</p>
+          <div className="bg-[#0E0E14] rounded-3xl border border-amber-500/20 p-12 text-center space-y-3 max-w-md mx-auto my-8 shadow-xl">
+            <h3 className="font-royal-title font-bold text-white text-lg">Your shopping bag is empty</h3>
+            <p className="text-xs text-stone-400">Please choose your outfits before proceeding to checkout.</p>
             <Link
               href="/shop"
-              className="inline-block px-6 py-3 bg-emerald-700 text-white rounded-xl text-xs font-bold hover:bg-emerald-800"
+              className="inline-block px-6 py-3 gold-gradient-btn text-black rounded-xl text-xs font-black uppercase tracking-wider"
             >
               Browse Collections
             </Link>
@@ -151,16 +153,16 @@ export default function CheckoutPage() {
           <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Delivery Form Column */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-8 shadow-sm space-y-5">
-                <h2 className="font-serif-luxury text-lg font-bold text-slate-900 flex items-center gap-2 border-b border-stone-100 pb-3">
-                  <Truck size={19} className="text-emerald-700" />
+              <div className="bg-[#0E0E14] rounded-3xl border border-amber-500/20 p-6 sm:p-8 shadow-xl space-y-5">
+                <h2 className="font-royal-title text-lg font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+                  <Truck size={19} className="text-amber-400" />
                   <span>1. Recipient & Delivery Information</span>
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">
-                      Full Name <span className="text-rose-500">*</span>
+                    <label className="font-bold text-stone-300">
+                      Full Name <span className="text-amber-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -168,13 +170,13 @@ export default function CheckoutPage() {
                       placeholder="e.g. Rahul Sharma"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full p-3 bg-[#14141C] border border-white/10 rounded-xl font-medium focus:bg-[#181824] focus:outline-none focus:ring-2 focus:ring-amber-400 text-stone-100 placeholder-stone-500"
                     />
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">
-                      WhatsApp / Mobile Number <span className="text-rose-500">*</span>
+                    <label className="font-bold text-stone-300">
+                      WhatsApp / Mobile Number <span className="text-amber-400">*</span>
                     </label>
                     <input
                       type="tel"
@@ -182,16 +184,16 @@ export default function CheckoutPage() {
                       placeholder="e.g. 7304396709 or +91 9876543210"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full p-3 bg-[#14141C] border border-white/10 rounded-xl font-mono font-bold focus:bg-[#181824] focus:outline-none focus:ring-2 focus:ring-amber-400 text-stone-100 placeholder-stone-500"
                     />
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-stone-500">
                       Order status and dispatch confirmation will be shared on this WhatsApp number.
                     </p>
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">
-                      Full Delivery Address (Flat/House No, Building, Street, Area, Landmark) <span className="text-rose-500">*</span>
+                    <label className="font-bold text-stone-300">
+                      Full Delivery Address (Flat/House No, Building, Street, Area, Landmark) <span className="text-amber-400">*</span>
                     </label>
                     <textarea
                       rows={3}
@@ -199,29 +201,29 @@ export default function CheckoutPage() {
                       placeholder="e.g. Flat 402, Sunshine Heights, MG Road, Near City Mall, Landmark: Next to HDFC Bank..."
                       value={deliveryAddress}
                       onChange={(e) => setDeliveryAddress(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full p-3 bg-[#14141C] border border-white/10 rounded-xl font-medium focus:bg-[#181824] focus:outline-none focus:ring-2 focus:ring-amber-400 text-stone-100 placeholder-stone-500"
                     />
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">Postal / PIN Code (Optional)</label>
+                    <label className="font-bold text-stone-300">Postal / PIN Code (Optional)</label>
                     <input
                       type="text"
                       placeholder="e.g. 400001 or 110001"
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl font-mono"
+                      className="w-full p-3 bg-[#14141C] border border-white/10 rounded-xl font-mono text-stone-100 placeholder-stone-500"
                     />
                   </div>
 
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="font-bold text-slate-700">Order Instructions (Optional)</label>
+                    <label className="font-bold text-stone-300">Order Instructions (Optional)</label>
                     <textarea
                       rows={2}
                       placeholder="e.g. Gift wrapping requested, deliver after 5 PM, call upon arrival..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl"
+                      className="w-full p-3 bg-[#14141C] border border-white/10 rounded-xl text-stone-100 placeholder-stone-500"
                     />
                   </div>
                 </div>
@@ -229,49 +231,49 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Summary & Place Button Column */}
-            <div className="bg-white rounded-3xl border border-stone-200/90 p-6 shadow-sm space-y-5">
-              <h3 className="font-serif-luxury font-bold text-slate-900 text-base border-b border-stone-100 pb-3 flex items-center justify-between">
+            <div className="bg-[#0E0E14] rounded-3xl border border-amber-500/20 p-6 shadow-xl space-y-5">
+              <h3 className="font-royal-title font-bold text-white text-base border-b border-white/5 pb-3 flex items-center justify-between">
                 <span>Order Summary</span>
-                <span className="text-xs font-mono text-slate-400 font-normal">{totalCount} item(s)</span>
+                <span className="text-xs font-mono text-amber-400 font-normal">{totalCount} item(s)</span>
               </h3>
 
               {/* Items mini list */}
-              <div className="max-h-56 overflow-y-auto space-y-2.5 divide-y divide-stone-100 pr-1 scrollbar-thin text-xs">
+              <div className="max-h-56 overflow-y-auto space-y-2.5 divide-y divide-white/5 pr-1 scrollbar-thin text-xs">
                 {cart.map((item) => (
                   <div key={item.id} className="pt-2 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden border border-stone-200 shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-stone-900 overflow-hidden border border-amber-500/20 shrink-0">
                         {item.productImage && (
                           <img src={item.productImage} alt="" className="w-full h-full object-cover" />
                         )}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-800 truncate max-w-[150px]">
+                        <p className="font-bold text-stone-200 truncate max-w-[150px]">
                           {item.productName}
                         </p>
-                        <p className="text-[10px] text-slate-500">
+                        <p className="text-[10px] text-amber-300/80">
                           {item.colour} &bull; {item.size} &bull; Qty: {item.quantity}
                         </p>
                       </div>
                     </div>
-                    <span className="font-black text-slate-900 shrink-0">
-                      {formatPrice(item.unitPrice * item.quantity)}
+                    <span className="font-black text-amber-400 shrink-0 font-serif-luxury">
+                      {formatPrice(item.unitPrice * item.quantity, currencySymbol)}
                     </span>
                   </div>
                 ))}
               </div>
 
               {/* Financial Breakdown */}
-              <div className="border-t border-stone-200 pt-3 space-y-2 text-xs text-slate-600">
+              <div className="border-t border-white/5 pt-3 space-y-2 text-xs text-stone-400">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span className="font-bold text-slate-900">{formatPrice(subtotal)}</span>
+                  <span className="font-bold text-stone-200">{formatPrice(subtotal, currencySymbol)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery Charge:</span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-bold text-amber-400">
                     {isFreeShipping ? (
-                      <span className="text-emerald-700 uppercase font-black">
+                      <span className="text-amber-400 uppercase font-black">
                         Free (Over {formatPrice(freeThreshold, currencySymbol)})
                       </span>
                     ) : (
@@ -279,9 +281,9 @@ export default function CheckoutPage() {
                     )}
                   </span>
                 </div>
-                <div className="border-t border-stone-100 pt-3 flex justify-between text-base font-black text-slate-950 font-serif-luxury">
+                <div className="border-t border-white/5 pt-3 flex justify-between text-base font-black text-white font-serif-luxury">
                   <span>Total Payable:</span>
-                  <span className="text-emerald-800 text-lg">{formatPrice(grandTotal)}</span>
+                  <span className="text-amber-400 text-lg font-black">{formatPrice(grandTotal, currencySymbol)}</span>
                 </div>
               </div>
 
@@ -289,7 +291,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white font-black text-sm rounded-2xl shadow-xl shadow-green-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-green-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <>
@@ -304,13 +306,13 @@ export default function CheckoutPage() {
                 )}
               </button>
 
-              <div className="pt-2 text-[11px] text-slate-400 space-y-1.5 leading-relaxed">
-                <p className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                  <CheckCircle2 size={13} className="text-emerald-700 shrink-0" />
+              <div className="pt-2 text-[11px] text-stone-500 space-y-1.5 leading-relaxed">
+                <p className="flex items-center gap-1.5 text-stone-400 font-semibold">
+                  <CheckCircle2 size={13} className="text-amber-400 shrink-0" />
                   <span>Real database order created with unique tracking ID.</span>
                 </p>
-                <p className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                  <ShieldCheck size={13} className="text-emerald-700 shrink-0" />
+                <p className="flex items-center gap-1.5 text-stone-400 font-semibold">
+                  <ShieldCheck size={13} className="text-amber-400 shrink-0" />
                   <span>Cash on Delivery upon parcel handover.</span>
                 </p>
               </div>

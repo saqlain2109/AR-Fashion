@@ -14,6 +14,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Truck,
+  Crown,
 } from 'lucide-react';
 
 export default function StoreHeader({ settings = null, content = null, categories: initialCategories = null }) {
@@ -97,118 +98,109 @@ export default function StoreHeader({ settings = null, content = null, categorie
   const showAnnouncement = activeSettings ? activeSettings.announcementActive !== false : true;
   const rawAnnouncement = activeSettings?.storeAnnouncement
     || content?.announcementBar
-    || `Special Festive Offer: FREE Delivery on orders over ${currencySym}2000 across India!`;
+    || `👑 AR Fashion House • Your Style Our Passion — Express Nationwide Delivery Above ${currencySym}2000`;
   const announcement = rawAnnouncement
     ? rawAnnouncement.replace(/[\uFFFD\?](?=\d)/g, currencySym).replace(/\uFFFD/g, currencySym)
     : '';
 
   const businessName = activeSettings?.businessName || 'AR Fashion House';
-  const storeLogo = activeSettings?.storeLogo || null;
-  const initials = businessName
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() || 'AR';
+  const storeLogo = activeSettings?.storeLogo || '/images/ar-fashion-logo.jpg';
 
   const waPhone = activeSettings?.primaryPhone || '+917304396709';
   const cleanPhone = waPhone.replace(/[^0-9]/g, '');
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-xs">
-      {/* 1. Top Luxury Announcement & Quick Info Bar */}
+    <header className="sticky top-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-b border-amber-500/20 shadow-2xl shadow-black/80">
+      {/* 1. Top Royal Announcement Bar */}
       {showAnnouncement && (
-        <div className="bg-[#0B132B] text-slate-300 text-[11px] font-medium py-2 px-4 border-b border-slate-800">
+        <div className="bg-[#040406] text-amber-200/90 text-[11px] font-medium py-2 px-4 border-b border-amber-500/20">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 truncate">
-              <Sparkles size={12} className="text-amber-400 shrink-0" />
-              <span className="truncate tracking-wide">{announcement}</span>
+              <Crown size={13} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]" />
+              <span className="truncate tracking-wide font-medium">{announcement}</span>
             </div>
 
-            <div className="hidden md:flex items-center gap-5 shrink-0 text-slate-400 font-medium text-[11px]">
-              <span className="flex items-center gap-1.5 text-emerald-400">
+            <div className="hidden md:flex items-center gap-5 shrink-0 text-stone-400 font-medium text-[11px]">
+              <span className="flex items-center gap-1.5 text-amber-300">
                 <Truck size={13} />
                 <span>All-India Express Delivery</span>
               </span>
-              <span className="text-slate-600">|</span>
+              <span className="text-amber-500/30">|</span>
               <a
                 href={`https://wa.me/${cleanPhone}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 hover:text-amber-300 transition-colors"
               >
                 <Phone size={12} className="text-emerald-400" />
-                <span>Helpline: {waPhone}</span>
+                <span>Concierge: {waPhone}</span>
               </a>
             </div>
           </div>
         </div>
       )}
 
-      {/* 2. Main High-Fashion Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      {/* 2. Main Luxury Haute Couture Navigation Bar */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-18 sm:h-22 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Mobile Menu Toggle + Brand Logo */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl text-slate-800 hover:bg-slate-100 transition-colors"
+            className="lg:hidden p-1.5 sm:p-2 rounded-xl text-amber-300 hover:bg-white/5 transition-colors shrink-0"
             aria-label="Toggle Navigation"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          <Link href="/" className="flex items-center gap-3 group">
-            {/* Logo or Monogram Seal */}
-            {storeLogo ? (
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+            {/* Logo Image */}
+            <div className="relative h-10 sm:h-14 w-auto flex items-center shrink-0">
               <img
                 src={storeLogo}
                 alt={businessName}
-                className="w-10 h-10 object-contain rounded-xl shadow-md border border-slate-200 bg-white"
+                className="h-10 sm:h-14 w-auto object-contain rounded-lg drop-shadow-[0_2px_12px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-transform duration-300"
               />
-            ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 border border-amber-500/30 text-amber-300 font-serif-luxury font-bold text-lg flex items-center justify-center shadow-md tracking-wider group-hover:border-amber-400 transition-all">
-                {initials}
-              </div>
-            )}
-            <div className="leading-tight">
-              <span className="font-serif-luxury font-black text-slate-950 text-lg sm:text-xl tracking-tight block">
+            </div>
+            
+            {/* Dynamic Brand Title & Tagline from Backend Settings */}
+            <div className="leading-tight min-w-0">
+              <span className="font-royal-title font-black text-xs sm:text-base lg:text-lg tracking-[0.14em] uppercase gold-gradient-text block truncate drop-shadow-sm">
                 {businessName}
               </span>
-              <span className="text-[9px] font-extrabold text-emerald-800 uppercase tracking-[0.2em] block">
-                Traditional &bull; Contemporary
+              <span className="font-royal-script text-[11px] sm:text-xs lg:text-sm text-amber-300/90 tracking-wide block -mt-0.5 truncate">
+                Your Style Our Passion
               </span>
             </div>
           </Link>
         </div>
 
         {/* Center: Streamlined Luxury Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-7 text-[13px] font-bold text-slate-800">
+        <nav className="hidden lg:flex items-center gap-8 text-[13px] font-bold text-stone-300">
           <Link
             href="/"
-            className="hover:text-emerald-700 transition-colors py-2"
+            className="hover:text-amber-300 transition-colors py-2 tracking-wide uppercase text-xs hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
           >
             Home
           </Link>
 
           <Link
             href="/shop"
-            className="hover:text-emerald-700 transition-colors py-2"
+            className="hover:text-amber-300 transition-colors py-2 tracking-wide uppercase text-xs hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
           >
-            Shop All
+            Shop Catalog
           </Link>
 
-          {/* Categories Mega Dropdown */}
+          {/* Collections Mega Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setCatDropdownOpen(!catDropdownOpen)}
               onMouseEnter={() => setCatDropdownOpen(true)}
-              className="flex items-center gap-1 hover:text-emerald-700 transition-colors py-2 group"
+              className="flex items-center gap-1.5 hover:text-amber-300 transition-colors py-2 group tracking-wide uppercase text-xs"
             >
               <span>Collections</span>
               <ChevronDown
                 size={14}
-                className={`transition-transform duration-200 text-slate-400 group-hover:text-emerald-700 ${
+                className={`transition-transform duration-200 text-amber-400 group-hover:text-amber-300 ${
                   catDropdownOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -217,40 +209,41 @@ export default function StoreHeader({ settings = null, content = null, categorie
             {catDropdownOpen && (
               <div
                 onMouseLeave={() => setCatDropdownOpen(false)}
-                className="absolute top-full -left-12 w-80 bg-white rounded-2xl shadow-2xl border border-stone-200 p-3 grid gap-1.5 z-50 animate-fade-in"
+                className="absolute top-full -left-12 w-80 bg-[#0C0C12]/98 backdrop-blur-2xl rounded-2xl shadow-2xl border border-amber-500/30 p-3 grid gap-1.5 z-50 animate-fade-in text-stone-200"
               >
-                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-stone-100 mb-1">
-                  Apparel Categories
+                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-amber-400/80 border-b border-white/5 mb-1 flex items-center justify-between">
+                  <span>Royal Collections</span>
+                  <Crown size={12} className="text-amber-400" />
                 </div>
                 {categories.map((c) => (
                   <Link
                     key={c.id}
                     href={`/shop?category=${c.slug}`}
                     onClick={() => setCatDropdownOpen(false)}
-                    className="flex items-center justify-between p-2 rounded-xl hover:bg-emerald-50/70 transition-colors group"
+                    className="flex items-center justify-between p-2 rounded-xl hover:bg-amber-500/10 hover:border hover:border-amber-500/30 transition-all group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg overflow-hidden bg-slate-100 border border-stone-200 shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-stone-900 border border-amber-500/20 shrink-0">
                         {c.image ? (
                           <img src={c.image} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500 font-bold">
-                            {c.name ? c.name.slice(0, 2).toUpperCase() : initials}
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-amber-400 font-bold">
+                            AR
                           </div>
                         )}
                       </div>
-                      <span className="text-xs font-bold text-slate-800 group-hover:text-emerald-800">
+                      <span className="text-xs font-semibold text-stone-200 group-hover:text-amber-300 transition-colors">
                         {c.name}
                       </span>
                     </div>
-                    <ArrowRight size={13} className="text-slate-300 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight size={13} className="text-stone-500 group-hover:text-amber-400 transition-transform group-hover:translate-x-1" />
                   </Link>
                 ))}
-                <div className="border-t border-stone-100 pt-2 px-1">
+                <div className="border-t border-white/5 pt-2 px-1">
                   <Link
                     href="/shop"
                     onClick={() => setCatDropdownOpen(false)}
-                    className="block text-center py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors"
+                    className="block text-center py-2.5 gold-gradient-btn font-extrabold text-xs rounded-xl shadow-md uppercase tracking-wider"
                   >
                     View Complete Catalog &rarr;
                   </Link>
@@ -261,9 +254,9 @@ export default function StoreHeader({ settings = null, content = null, categorie
 
           <Link
             href="/#about"
-            className="hover:text-emerald-700 transition-colors py-2 text-slate-600"
+            className="hover:text-amber-300 transition-colors py-2 tracking-wide uppercase text-xs text-stone-400 hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
           >
-            Our Heritage
+            Brand Heritage
           </Link>
         </nav>
 
@@ -276,15 +269,15 @@ export default function StoreHeader({ settings = null, content = null, categorie
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Search Panjabi, Saree..."
+                  placeholder="Search Panjabi, Saree, Kurtis..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-48 sm:w-60 px-3.5 py-1.5 text-xs bg-stone-100 border border-stone-300 rounded-full focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 text-slate-900 font-medium"
+                  className="w-48 sm:w-64 px-4 py-2 text-xs bg-[#121218] border border-amber-500/40 rounded-full focus:bg-[#181822] focus:outline-none focus:ring-2 focus:ring-amber-400 text-stone-100 placeholder-stone-500 font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setSearchOpen(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700"
+                  className="p-1.5 text-stone-400 hover:text-amber-300"
                 >
                   <X size={16} />
                 </button>
@@ -292,10 +285,10 @@ export default function StoreHeader({ settings = null, content = null, categorie
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2.5 rounded-full text-slate-700 hover:bg-stone-100 transition-colors"
-                title="Search Products"
+                className="p-2.5 rounded-full text-stone-300 hover:text-amber-300 hover:bg-white/5 transition-colors border border-transparent hover:border-amber-500/20"
+                title="Search Outfits"
               >
-                <Search size={19} />
+                <Search size={18} />
               </button>
             )}
           </div>
@@ -306,23 +299,23 @@ export default function StoreHeader({ settings = null, content = null, categorie
             target="_blank"
             rel="noopener noreferrer"
             title="Chat & Order directly on WhatsApp"
-            className="hidden sm:flex items-center gap-2 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300/80 rounded-full text-xs font-bold transition-all shadow-2xs hover:scale-[1.02]"
+            className="hidden sm:flex items-center gap-2 px-3.5 py-2 bg-[#102418] hover:bg-[#153020] text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold transition-all shadow-sm hover:scale-[1.02]"
           >
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <Phone size={13} className="text-emerald-700" />
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+            <Phone size={13} className="text-emerald-400" />
             <span>WhatsApp Order</span>
           </a>
 
           {/* Luxury Shopping Bag */}
           <button
             onClick={() => setDrawerOpen(true)}
-            className="relative p-2.5 sm:px-3.5 sm:py-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-md shadow-slate-900/15 flex items-center gap-2 group"
+            className="relative p-2.5 sm:px-4 sm:py-2.5 rounded-full gold-gradient-btn flex items-center gap-2 group cursor-pointer"
             aria-label="View Shopping Bag"
           >
-            <ShoppingBag size={17} className="group-hover:scale-110 transition-transform" />
-            <span className="hidden md:inline text-xs font-bold">Bag</span>
+            <ShoppingBag size={17} className="text-black group-hover:scale-110 transition-transform" />
+            <span className="hidden md:inline text-xs font-black uppercase tracking-wider text-black">Bag</span>
             {totalCount > 0 && (
-              <span className="w-5 h-5 bg-emerald-500 text-white font-extrabold text-[10px] rounded-full flex items-center justify-center border-2 border-slate-900">
+              <span className="w-5 h-5 bg-black text-amber-300 font-black text-[10px] rounded-full flex items-center justify-center border border-amber-400/80 shadow-sm">
                 {totalCount}
               </span>
             )}
@@ -332,38 +325,40 @@ export default function StoreHeader({ settings = null, content = null, categorie
 
       {/* 3. Mobile Slide-Down Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-stone-200 bg-white p-5 space-y-4 animate-fade-in shadow-xl">
+        <div className="lg:hidden border-t border-amber-500/20 bg-[#0A0A0F]/98 backdrop-blur-2xl p-5 space-y-4 animate-fade-in shadow-2xl">
           {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} className="relative">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400/60" />
             <input
               type="text"
               placeholder="Search by product, fabric, SKU..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-xs bg-stone-100 border border-stone-200 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#121218] border border-amber-500/30 rounded-xl font-medium focus:bg-[#181822] focus:outline-none focus:ring-2 focus:ring-amber-400 text-stone-100 placeholder-stone-500"
             />
           </form>
 
           {/* Navigation Links */}
-          <nav className="flex flex-col space-y-1 text-sm font-bold text-slate-800">
+          <nav className="flex flex-col space-y-1 text-sm font-bold text-stone-200">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2.5 hover:bg-stone-50 rounded-xl"
+              className="p-2.5 hover:bg-white/5 rounded-xl hover:text-amber-300 transition-colors"
             >
               Home
             </Link>
             <Link
               href="/shop"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2.5 hover:bg-stone-50 rounded-xl text-emerald-800 font-extrabold"
+              className="p-2.5 hover:bg-white/5 rounded-xl text-amber-400 font-extrabold flex items-center justify-between"
             >
-              Shop All Outfits &rarr;
+              <span>Shop All Outfits</span>
+              <span>&rarr;</span>
             </Link>
 
-            <div className="pt-2 pb-1 border-t border-stone-100 text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2.5">
-              Collections
+            <div className="pt-2 pb-1 border-t border-white/5 text-[10px] font-bold uppercase tracking-widest text-amber-400/70 px-2.5 flex items-center justify-between">
+              <span>Collections</span>
+              <Crown size={12} className="text-amber-400" />
             </div>
 
             {categories.map((c) => (
@@ -371,19 +366,19 @@ export default function StoreHeader({ settings = null, content = null, categorie
                 key={c.id}
                 href={`/shop?category=${c.slug}`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 hover:bg-stone-50 rounded-xl text-slate-700 flex items-center justify-between"
+                className="p-2.5 hover:bg-white/5 rounded-xl text-stone-300 hover:text-amber-300 flex items-center justify-between transition-colors"
               >
                 <span>{c.name}</span>
-                <span className="text-xs text-slate-400">&rarr;</span>
+                <span className="text-xs text-amber-400/60">&rarr;</span>
               </Link>
             ))}
 
             <Link
               href="/#about"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2.5 hover:bg-stone-50 rounded-xl text-slate-600 border-t border-stone-100 pt-3"
+              className="p-2.5 hover:bg-white/5 rounded-xl text-stone-400 hover:text-amber-300 border-t border-white/5 pt-3 transition-colors"
             >
-              Our Heritage & Craft
+              Brand Heritage & Craft
             </Link>
           </nav>
 
@@ -392,7 +387,7 @@ export default function StoreHeader({ settings = null, content = null, categorie
             href={`https://wa.me/${cleanPhone}?text=Hello%20${encodeURIComponent(businessName)},%20I%20have%20an%20order%20inquiry.`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3 bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm"
+            className="w-full py-3 bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40"
           >
             <Phone size={14} />
             <span>Direct WhatsApp Order Helpline</span>

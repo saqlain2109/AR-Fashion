@@ -11,6 +11,7 @@ import {
   Sparkles,
   SlidersHorizontal,
   RotateCcw,
+  Crown,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import Portal from '@/components/ui/Portal';
@@ -89,19 +90,19 @@ export default function ShopCatalogClient({
 
   return (
     <div className="space-y-6">
-      {/* 1. Sleek Top Filter Bar & Sorting Bar */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-3 sm:p-4 shadow-xs space-y-3">
+      {/* 1. Sleek Luxury Top Filter & Sorting Bar */}
+      <div className="bg-[#0E0E14] rounded-2xl border border-amber-500/20 p-3 sm:p-4 shadow-lg space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Left: Filter Trigger Button */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setDrawerOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
+              className="flex items-center gap-2 px-4 py-2.5 gold-gradient-btn text-black rounded-xl text-xs font-black transition-all shadow-md active:scale-95 cursor-pointer uppercase tracking-wider"
             >
-              <SlidersHorizontal size={14} className="text-emerald-400" />
+              <SlidersHorizontal size={14} className="text-black" />
               <span>Filter Products</span>
               {activeFilterCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-black text-amber-300 font-black text-[10px] flex items-center justify-center border border-amber-400">
                   {activeFilterCount}
                 </span>
               )}
@@ -110,7 +111,7 @@ export default function ShopCatalogClient({
             {activeFilterCount > 0 && (
               <Link
                 href="/shop"
-                className="text-xs text-rose-600 hover:text-rose-700 font-bold px-2 py-1 flex items-center gap-1 hover:underline"
+                className="text-xs text-rose-400 hover:text-rose-300 font-bold px-2 py-1 flex items-center gap-1 hover:underline"
               >
                 <RotateCcw size={12} />
                 <span className="hidden sm:inline">Reset Filters</span>
@@ -120,11 +121,11 @@ export default function ShopCatalogClient({
 
           {/* Right: Quick Sorting */}
           <div className="flex items-center gap-1.5 sm:gap-2 text-xs">
-            <span className="text-slate-500 font-semibold hidden md:inline flex items-center gap-1">
-              <ArrowUpDown size={13} />
+            <span className="text-stone-400 font-semibold hidden md:inline flex items-center gap-1">
+              <ArrowUpDown size={13} className="text-amber-400" />
               Sort:
             </span>
-            <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-[#14141C] p-1 rounded-xl border border-white/5">
               {[
                 { label: 'Newest', key: 'newest' },
                 { label: 'Price: Low-High', key: 'price_asc' },
@@ -133,10 +134,10 @@ export default function ShopCatalogClient({
                 <Link
                   key={s.key}
                   href={buildUrl({ sort: s.key })}
-                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-colors ${
+                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
                     sort === s.key
-                      ? 'bg-white text-slate-900 shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'gold-gradient-btn text-black shadow-sm font-black'
+                      : 'text-stone-400 hover:text-amber-300'
                   }`}
                 >
                   {s.label}
@@ -148,15 +149,15 @@ export default function ShopCatalogClient({
 
         {/* Active Filter Chips / Pills */}
         {activeFilterCount > 0 && (
-          <div className="pt-2 border-t border-stone-100 flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
+          <div className="pt-2 border-t border-white/5 flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-[11px] font-bold text-amber-400/70 uppercase tracking-widest mr-1">
               Active:
             </span>
 
             {categorySlug && (
               <Link
                 href={buildUrl({ category: '' })}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold hover:bg-emerald-100 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-colors"
               >
                 <span>Category: {activeCategoryObj?.name || categorySlug}</span>
                 <X size={12} />
@@ -166,7 +167,7 @@ export default function ShopCatalogClient({
             {sizeFilter && (
               <Link
                 href={buildUrl({ size: '' })}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold hover:bg-emerald-100 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-colors"
               >
                 <span>Size: {sizeFilter}</span>
                 <X size={12} />
@@ -176,7 +177,7 @@ export default function ShopCatalogClient({
             {colourFilter && (
               <Link
                 href={buildUrl({ colour: '' })}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold hover:bg-emerald-100 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-colors"
               >
                 <span>Colour: {colourFilter}</span>
                 <X size={12} />
@@ -186,7 +187,7 @@ export default function ShopCatalogClient({
             {inStockOnly && (
               <Link
                 href={buildUrl({ inStock: '' })}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold hover:bg-emerald-100 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-colors"
               >
                 <span>In-Stock Only</span>
                 <X size={12} />
@@ -196,7 +197,7 @@ export default function ShopCatalogClient({
             {searchQuery && (
               <Link
                 href={buildUrl({ search: '' })}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-100 border border-stone-300 text-slate-800 font-bold hover:bg-stone-200 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-800 border border-stone-600 text-stone-200 font-bold hover:bg-stone-700 transition-colors"
               >
                 <span>&ldquo;{searchQuery}&rdquo;</span>
                 <X size={12} />
@@ -206,32 +207,32 @@ export default function ShopCatalogClient({
         )}
       </div>
 
-      {/* 2. Slide-Over Filter Drawer Modal */}
+      {/* 2. Slide-Over Filter Drawer Modal (Obsidian & Gold Glass) */}
       {drawerOpen && (
         <Portal>
           <div className="fixed inset-0 z-[9999] flex justify-end">
             {/* Backdrop */}
             <div
               onClick={() => setDrawerOpen(false)}
-              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity animate-in fade-in"
+              className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity animate-in fade-in"
             />
 
             {/* Slide-in Panel */}
-            <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300">
+            <div className="relative w-full max-w-md bg-[#0C0C12] text-stone-100 h-full shadow-2xl border-l border-amber-500/30 flex flex-col z-10 animate-in slide-in-from-right duration-300">
               {/* Drawer Top Header */}
-              <div className="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-[#0B132B] text-white">
+              <div className="p-4 sm:p-5 border-b border-amber-500/20 flex items-center justify-between bg-[#07070A]">
                 <div className="flex items-center gap-2.5">
-                  <SlidersHorizontal size={18} className="text-emerald-400" />
+                  <Crown size={18} className="text-amber-400" />
                   <div>
-                    <h3 className="font-serif-luxury font-black text-base text-white">Filter Outfits</h3>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-wider">
-                      Tailor catalog by collection, size & color
+                    <h3 className="font-royal-title font-black text-base text-white">Filter Catalog</h3>
+                    <p className="text-[10px] text-amber-300/80 uppercase tracking-widest">
+                      Tailor by collection, size & colour
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -242,14 +243,14 @@ export default function ShopCatalogClient({
                 {/* 1. Category Options */}
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">
+                    <h4 className="font-bold text-amber-400 uppercase tracking-widest text-[11px]">
                       Collection / Category
                     </h4>
                     {categorySlug && (
                       <Link
                         href={buildUrl({ category: '' })}
                         onClick={() => setDrawerOpen(false)}
-                        className="text-[11px] text-emerald-700 font-bold hover:underline"
+                        className="text-[11px] text-amber-300 font-bold hover:underline"
                       >
                         Show All
                       </Link>
@@ -259,83 +260,87 @@ export default function ShopCatalogClient({
                     <Link
                       href={buildUrl({ category: '' })}
                       onClick={() => setDrawerOpen(false)}
-                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
+                      className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
                         !categorySlug
-                          ? 'bg-emerald-50 text-emerald-950 font-extrabold border-emerald-300 shadow-2xs'
-                          : 'bg-stone-50 border-stone-200 text-slate-700 hover:bg-stone-100'
+                          ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 font-bold'
+                          : 'bg-[#121218] border-white/5 text-stone-300 hover:bg-[#181822]'
                       }`}
                     >
                       <span>All Collections</span>
-                      {!categorySlug && <Check size={14} className="text-emerald-700" />}
+                      {!categorySlug && <Check size={14} className="text-amber-400" />}
                     </Link>
 
-                    {categories.map((cat) => {
-                      const isSelected = categorySlug === cat.slug;
+                    {categories.map((c) => {
+                      const isSelected = categorySlug === c.slug;
                       return (
                         <Link
-                          key={cat.id}
-                          href={buildUrl({ category: cat.slug })}
+                          key={c.id}
+                          href={buildUrl({ category: isSelected ? '' : c.slug })}
                           onClick={() => setDrawerOpen(false)}
-                          className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
+                          className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
                             isSelected
-                              ? 'bg-emerald-50 text-emerald-950 font-extrabold border-emerald-300 shadow-2xs'
-                              : 'bg-stone-50 border-stone-200 text-slate-700 hover:bg-stone-100'
+                              ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 font-bold'
+                              : 'bg-[#121218] border-white/5 text-stone-300 hover:bg-[#181822]'
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
-                            {cat.image ? (
-                              <img src={cat.image} alt="" className="w-5 h-5 rounded-md object-cover" />
-                            ) : null}
-                            <span>{cat.name}</span>
+                            {c.image && (
+                              <img src={c.image} alt="" className="w-6 h-6 rounded-md object-cover" />
+                            )}
+                            <span>{c.name}</span>
                           </div>
-                          {isSelected && <Check size={14} className="text-emerald-700" />}
+                          {isSelected && <Check size={14} className="text-amber-400" />}
                         </Link>
                       );
                     })}
                   </div>
                 </div>
 
-                {/* 2. In-Stock Items Only Toggle */}
-                <div className="border-t border-stone-100 pt-5">
+                {/* 2. In-Stock Only Toggle */}
+                <div className="border-t border-white/5 pt-5">
                   <Link
                     href={buildUrl({ inStock: inStockOnly ? '' : 'true' })}
                     onClick={() => setDrawerOpen(false)}
-                    className="flex items-center justify-between p-3 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 transition-colors"
+                    className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                      inStockOnly
+                        ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 font-bold'
+                        : 'bg-[#121218] border-white/5 text-stone-300 hover:bg-[#181822]'
+                    }`}
                   >
                     <div>
-                      <p className="font-bold text-slate-900 text-xs">In-Stock Only</p>
-                      <p className="text-[10px] text-slate-500">Hide out-of-stock items</p>
+                      <div className="font-bold text-xs">Ready-to-Ship / In Stock Only</div>
+                      <div className="text-[10px] text-stone-400">Hide outfits currently sold out</div>
                     </div>
                     <div
-                      className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+                      className={`w-5 h-5 rounded-md border flex items-center justify-center ${
                         inStockOnly
-                          ? 'bg-emerald-700 border-emerald-700 text-white'
-                          : 'border-stone-300 bg-white'
+                          ? 'bg-amber-400 border-amber-400 text-black'
+                          : 'border-stone-600 bg-stone-900'
                       }`}
                     >
-                      {inStockOnly && <Check size={13} />}
+                      {inStockOnly && <Check size={13} strokeWidth={3} />}
                     </div>
                   </Link>
                 </div>
 
                 {/* 3. Sizes */}
                 {availableSizes.length > 0 && (
-                  <div className="border-t border-stone-100 pt-5 space-y-2.5">
+                  <div className="border-t border-white/5 pt-5 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">
+                      <h4 className="font-bold text-amber-400 uppercase tracking-widest text-[11px]">
                         Available Sizes
                       </h4>
                       {sizeFilter && (
                         <Link
                           href={buildUrl({ size: '' })}
                           onClick={() => setDrawerOpen(false)}
-                          className="text-[11px] text-emerald-700 font-bold hover:underline"
+                          className="text-[11px] text-amber-300 font-bold hover:underline"
                         >
                           Clear Size
                         </Link>
                       )}
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                       {availableSizes.map((sz) => {
                         const isSelected = sizeFilter === sz;
                         return (
@@ -343,10 +348,10 @@ export default function ShopCatalogClient({
                             key={sz}
                             href={buildUrl({ size: isSelected ? '' : sz })}
                             onClick={() => setDrawerOpen(false)}
-                            className={`px-3.5 py-2 rounded-xl border text-xs font-bold transition-all ${
+                            className={`py-2 px-1 text-center rounded-xl border text-xs font-mono font-bold transition-all ${
                               isSelected
-                                ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs scale-105'
-                                : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
+                                ? 'gold-gradient-btn text-black shadow-md'
+                                : 'bg-[#121218] text-stone-300 border-white/5 hover:bg-[#181822] hover:text-white'
                             }`}
                           >
                             {sz}
@@ -359,16 +364,16 @@ export default function ShopCatalogClient({
 
                 {/* 4. Colour Palette */}
                 {availableColours.length > 0 && (
-                  <div className="border-t border-stone-100 pt-5 space-y-2.5">
+                  <div className="border-t border-white/5 pt-5 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">
+                      <h4 className="font-bold text-amber-400 uppercase tracking-widest text-[11px]">
                         Colour Palette
                       </h4>
                       {colourFilter && (
                         <Link
                           href={buildUrl({ colour: '' })}
                           onClick={() => setDrawerOpen(false)}
-                          className="text-[11px] text-emerald-700 font-bold hover:underline"
+                          className="text-[11px] text-amber-300 font-bold hover:underline"
                         >
                           Clear Colour
                         </Link>
@@ -385,12 +390,12 @@ export default function ShopCatalogClient({
                             onClick={() => setDrawerOpen(false)}
                             className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition-all ${
                               isSelected
-                                ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
-                                : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-sm'
+                                : 'bg-[#121218] text-stone-300 border-white/5 hover:bg-[#181822]'
                             }`}
                           >
                             <span
-                              className="w-3.5 h-3.5 rounded-full border border-black/20 shrink-0"
+                              className="w-3.5 h-3.5 rounded-full border border-white/30 shrink-0"
                               style={{ backgroundColor: matchVar?.colourCode || '#1E293B' }}
                             />
                             <span className="truncate">{cl}</span>
@@ -403,18 +408,18 @@ export default function ShopCatalogClient({
               </div>
 
               {/* Drawer Bottom Bar */}
-              <div className="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between gap-3">
+              <div className="p-4 border-t border-amber-500/20 bg-[#07070A] flex items-center justify-between gap-3">
                 <Link
                   href="/shop"
                   onClick={() => setDrawerOpen(false)}
-                  className="px-4 py-2.5 border border-stone-300 text-slate-700 hover:bg-white rounded-xl text-xs font-bold transition-colors"
+                  className="px-4 py-2.5 border border-amber-500/30 text-stone-300 hover:text-white hover:bg-white/5 rounded-xl text-xs font-bold transition-colors uppercase tracking-wider"
                 >
                   Reset All
                 </Link>
                 <button
                   type="button"
                   onClick={() => setDrawerOpen(false)}
-                  className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-extrabold shadow-sm transition-all"
+                  className="flex-1 py-2.5 gold-gradient-btn text-black rounded-xl text-xs font-black shadow-md transition-all uppercase tracking-wider cursor-pointer"
                 >
                   View {products.length} Results &rarr;
                 </button>
@@ -424,19 +429,19 @@ export default function ShopCatalogClient({
         </Portal>
       )}
 
-      {/* 3. Product Grid (Displays immediately at top with 0 unnecessary scrolling!) */}
+      {/* 3. Product Grid */}
       {products.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-stone-200 p-12 text-center space-y-4 my-6">
-          <div className="w-16 h-16 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mx-auto">
+        <div className="bg-[#0E0E14] rounded-3xl border border-amber-500/20 p-12 text-center space-y-4 my-6">
+          <div className="w-16 h-16 rounded-full bg-stone-900 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
             <ShoppingBag size={28} />
           </div>
-          <h3 className="font-serif-luxury font-bold text-slate-900 text-lg">No Outfits Found</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+          <h3 className="font-royal-title font-bold text-white text-lg">No Outfits Found</h3>
+          <p className="text-xs text-stone-400 max-w-sm mx-auto leading-relaxed">
             We couldn&apos;t find any outfits matching your selected filter criteria. Try clearing some filters.
           </p>
           <Link
             href="/shop"
-            className="inline-block px-5 py-2.5 bg-emerald-700 text-white rounded-xl text-xs font-bold hover:bg-emerald-800 shadow-sm"
+            className="inline-block px-5 py-2.5 gold-gradient-btn text-black rounded-xl text-xs font-black shadow-sm uppercase tracking-wider"
           >
             Reset All Filters
           </Link>
@@ -457,10 +462,10 @@ export default function ShopCatalogClient({
               <Link
                 key={prod.id}
                 href={`/product/${prod.slug}`}
-                className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
+                className="group bg-[#0E0E14] rounded-2xl sm:rounded-3xl overflow-hidden border border-amber-500/20 shadow-md hover:border-amber-400/70 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
               >
                 {/* Photo showcase with badges */}
-                <div className="aspect-[3/4] w-full overflow-hidden bg-stone-100 relative">
+                <div className="aspect-[3/4] w-full overflow-hidden bg-stone-900 relative">
                   {cardImage ? (
                     <img
                       src={cardImage}
@@ -471,19 +476,19 @@ export default function ShopCatalogClient({
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
+                    <div className="w-full h-full flex items-center justify-center text-stone-500 text-xs">
                       No Photo
                     </div>
                   )}
 
                   <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
                     {prod.isNewArrival && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-900 text-white shadow-xs">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-black text-amber-400 border border-amber-500/40 shadow-xs">
                         NEW
                       </span>
                     )}
                     {isOutOfStock && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-xs">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-950 text-rose-300 border border-rose-800 shadow-xs">
                         Sold Out
                       </span>
                     )}
@@ -493,10 +498,10 @@ export default function ShopCatalogClient({
                 {/* Details Card */}
                 <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                    <span className="text-[9px] sm:text-[10px] font-bold text-amber-400/80 uppercase tracking-widest">
                       {prod.category?.name}
                     </span>
-                    <h3 className="font-serif-luxury font-bold text-slate-900 text-xs sm:text-sm mt-0.5 line-clamp-2 leading-snug group-hover:text-emerald-800 transition-colors">
+                    <h3 className="font-serif-luxury font-bold text-stone-100 text-xs sm:text-sm mt-0.5 line-clamp-2 leading-snug group-hover:text-amber-300 transition-colors">
                       {prod.name}
                     </h3>
 
@@ -506,12 +511,12 @@ export default function ShopCatalogClient({
                         {uniqueColours.map((code, idx) => (
                           <span
                             key={idx}
-                            className="w-2.5 h-2.5 rounded-full border border-black/20"
+                            className="w-2.5 h-2.5 rounded-full border border-white/20"
                             style={{ backgroundColor: code }}
                           />
                         ))}
                         {prod.variants?.length > 4 && (
-                          <span className="text-[9px] text-slate-400 font-semibold ml-0.5">
+                          <span className="text-[9px] text-stone-500 font-semibold ml-0.5">
                             +{prod.variants.length - 4}
                           </span>
                         )}
@@ -520,19 +525,19 @@ export default function ShopCatalogClient({
                   </div>
 
                   {/* Fully mobile-proof pricing & action button row */}
-                  <div className="pt-2.5 mt-2.5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-1.5">
+                  <div className="pt-2 mt-2 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                     <div className="flex flex-wrap items-baseline gap-1">
-                      <span className="text-sm sm:text-base font-black text-slate-900 font-serif-luxury">
+                      <span className="text-xs sm:text-base font-black text-amber-400 font-serif-luxury">
                         {formatPrice(prod.sellingPrice, currencySymbol)}
                       </span>
                       {prod.originalPrice && prod.originalPrice > prod.sellingPrice && (
-                        <span className="text-[10px] sm:text-xs text-slate-400 line-through">
+                        <span className="text-[9px] sm:text-xs text-stone-500 line-through">
                           {formatPrice(prod.originalPrice, currencySymbol)}
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md group-hover:bg-emerald-100 transition-colors shrink-0">
-                      View &rarr;
+                    <span className="text-[9px] sm:text-[11px] font-extrabold gold-gradient-btn px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0">
+                      View Piece &rarr;
                     </span>
                   </div>
                 </div>

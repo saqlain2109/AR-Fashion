@@ -3,6 +3,7 @@ import StoreHeader from '@/components/store/StoreHeader';
 import StoreFooter from '@/components/store/StoreFooter';
 import ShopCatalogClient from '@/components/store/ShopCatalogClient';
 import Link from 'next/link';
+import { Crown } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -84,22 +85,22 @@ export default async function ShopPage({ searchParams }) {
   const availableColours = [...new Set(allVariants.map((v) => v.colour).filter(Boolean))];
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-[#070709] text-stone-100 overflow-x-hidden">
       <StoreHeader categories={categories} settings={settings} content={content} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Breadcrumb & Title */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mb-1.5">
-            <Link href="/" className="hover:text-emerald-800 transition-colors">
+          <div className="flex items-center gap-2 text-xs text-stone-400 font-medium mb-1.5">
+            <Link href="/" className="hover:text-amber-300 transition-colors">
               Home
             </Link>
             <span>/</span>
-            <span className="text-slate-800 font-bold">Catalog</span>
+            <span className="text-stone-300 font-bold">Catalog</span>
             {categorySlug && (
               <>
                 <span>/</span>
-                <span className="text-emerald-800 font-bold capitalize">
+                <span className="text-amber-400 font-bold capitalize">
                   {categorySlug.replace(/-/g, ' ')}
                 </span>
               </>
@@ -107,17 +108,20 @@ export default async function ShopPage({ searchParams }) {
           </div>
 
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h1 className="font-serif-luxury text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              {categorySlug
-                ? categories.find((c) => c.slug === categorySlug)?.name || 'Collection'
-                : filterType === 'featured'
-                ? 'Featured Highlights'
-                : filterType === 'new'
-                ? 'New Arrivals 2026'
-                : 'All Outfits & Collections'}
+            <h1 className="font-royal-title text-2xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-2.5">
+              <span>
+                {categorySlug
+                  ? categories.find((c) => c.slug === categorySlug)?.name || 'Collection'
+                  : filterType === 'featured'
+                  ? 'Featured Highlights'
+                  : filterType === 'new'
+                  ? 'New Arrivals 2026'
+                  : 'All Outfits & Collections'}
+              </span>
+              <Crown size={20} className="text-amber-400 hidden sm:inline" />
             </h1>
-            <p className="text-xs text-slate-500">
-              Showing <strong className="text-slate-900 font-bold">{products.length}</strong> available outfit(s)
+            <p className="text-xs text-stone-400">
+              Showing <strong className="text-amber-400 font-bold">{products.length}</strong> available outfit(s)
             </p>
           </div>
         </div>

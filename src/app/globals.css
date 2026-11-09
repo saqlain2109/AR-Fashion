@@ -1,47 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary: #0F5132;
-  --primary-hover: #0A3622;
+  --primary: #D4AF37;
+  --primary-hover: #C59B27;
   --gold-accent: #D4AF37;
   --gold-light: #FBF7EE;
-  --dark-sidebar: #0F172A;
-  --darker-sidebar: #0B132B;
+  --noir-bg: #070709;
+  --noir-card: #0E0E14;
 }
 
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #18181B;
-  background-color: #FAFAFA;
+  color: #F5F5F4;
+  background-color: #070709;
 }
 
 h1, h2, h3, .font-serif-luxury {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Playfair Display', 'Cinzel', Georgia, serif;
 }
 
-/* Custom scrollbars */
+.font-royal-title {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  letter-spacing: 0.08em;
+}
+
+.font-royal-script {
+  font-family: 'Great Vibes', cursive, 'Playfair Display', Georgia, serif;
+}
+
+/* Metallic Gold Gradients & Shimmers */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF1BE 0%, #F5D061 25%, #E5B229 50%, #FAF0CD 75%, #C2931D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #F0C45A 0%, #D4AF37 50%, #B8860B 100%);
+}
+
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #F3D275 0%, #D4AF37 40%, #B88915 100%);
+  color: #0A0A0D;
+  transition: all 0.25s ease;
+}
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #FFF0B3 0%, #E3BE48 40%, #C79822 100%);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.45);
+  transform: translateY(-1px);
+}
+
+.gold-border-glow {
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.12);
+}
+
+.gold-border-glow:hover {
+  border-color: rgba(212, 175, 55, 0.65);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+}
+
+/* Custom dark scrollbars for noir luxury theme */
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #09090D;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #272733;
   border-radius: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #D4AF37;
 }
 
 /* Table freeze utility classes */
@@ -49,7 +92,7 @@ h1, h2, h3, .font-serif-luxury {
   position: sticky;
   top: 0;
   z-index: 20;
-  background-color: #f8fafc;
+  background-color: #0E0E14;
 }
 
 .freeze-col-first {

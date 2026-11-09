@@ -570,37 +570,39 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                       )}
                     </div>
 
-                    {images.length > 1 && (
+                    {images.filter((img) => (typeof img === 'string' ? Boolean(img?.trim()) : Boolean(img?.url?.trim()))).length > 1 && (
                       <div className="flex gap-2 overflow-x-auto pb-1">
-                        {images.map((img, i) => {
-                          const imgUrl = typeof img === 'string' ? img : (img?.url || FALLBACK_PRODUCT_IMAGE);
-                          const imgColour = typeof img === 'object' ? (img?.colour || '') : '';
-                          const isSelected = previewActiveImage === imgUrl;
-                          return (
-                            <button
-                              type="button"
-                              key={i}
-                              onClick={() => setPreviewActiveImage(imgUrl)}
-                              className={`w-16 h-16 rounded-xl overflow-hidden border-2 shrink-0 transition-all relative group ${
-                                isSelected ? 'border-emerald-600 ring-2 ring-emerald-500/30' : 'border-slate-200 hover:border-slate-400'
-                              }`}
-                            >
-                              <img
-                                src={imgUrl}
-                                alt=""
-                                onError={(e) => {
-                                  e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
-                                }}
-                                className="w-full h-full object-cover"
-                              />
-                              {imgColour && (
-                                <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-[8px] text-white font-bold truncate px-1 text-center py-0.5">
-                                  {imgColour}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
+                        {images
+                          .filter((img) => (typeof img === 'string' ? Boolean(img?.trim()) : Boolean(img?.url?.trim())))
+                          .map((img, i) => {
+                            const imgUrl = (typeof img === 'string' ? img : img?.url) || FALLBACK_PRODUCT_IMAGE;
+                            const imgColour = typeof img === 'object' ? (img?.colour || '') : '';
+                            const isSelected = previewActiveImage === imgUrl;
+                            return (
+                              <button
+                                type="button"
+                                key={i}
+                                onClick={() => setPreviewActiveImage(imgUrl)}
+                                className={`w-16 h-16 rounded-xl overflow-hidden border-2 shrink-0 transition-all relative group ${
+                                  isSelected ? 'border-emerald-600 ring-2 ring-emerald-500/30' : 'border-slate-200 hover:border-slate-400'
+                                }`}
+                              >
+                                <img
+                                  src={imgUrl}
+                                  alt=""
+                                  onError={(e) => {
+                                    e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                                  }}
+                                  className="w-full h-full object-cover"
+                                />
+                                {imgColour && (
+                                  <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-[8px] text-white font-bold truncate px-1 text-center py-0.5">
+                                    {imgColour}
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
                       </div>
                     )}
                   </div>

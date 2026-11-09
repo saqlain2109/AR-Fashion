@@ -9,8 +9,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="antialiased min-h-screen flex flex-col">
+    <html lang="en" className="dark">
+      <body className="antialiased min-h-screen flex flex-col bg-[#070709] text-stone-100 selection:bg-amber-400 selection:text-black">
         <CartProvider>
           {children}
           <CartDrawer />

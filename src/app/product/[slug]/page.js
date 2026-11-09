@@ -5,6 +5,7 @@ import StoreFooter from '@/components/store/StoreFooter';
 import ProductDetailClient from '@/components/store/ProductDetailClient';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
+import { Crown } from 'lucide-react';
 
 export async function generateMetadata({ params }) {
   const product = await prisma.product.findUnique({
@@ -49,6 +50,8 @@ export default async function ProductDetailPage({ params }) {
     notFound();
   }
 
+  const currencySymbol = settings?.currencySymbol || '₹';
+
   // Related products from same category
   const relatedProducts = await prisma.product.findMany({
     where: {
@@ -60,28 +63,28 @@ export default async function ProductDetailPage({ params }) {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#070709] text-stone-100 overflow-x-hidden">
       <StoreHeader categories={categories} settings={settings} content={content} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-          <Link href="/" className="hover:text-emerald-700">
+        <div className="flex items-center gap-2 text-xs text-stone-400 font-medium">
+          <Link href="/" className="hover:text-amber-300 transition-colors">
             Home
           </Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-emerald-700">
-            Shop
+          <Link href="/shop" className="hover:text-amber-300 transition-colors">
+            Catalog
           </Link>
           <span>/</span>
           <Link
             href={`/shop?category=${product.category?.slug}`}
-            className="hover:text-emerald-700 capitalize"
+            className="hover:text-amber-300 capitalize transition-colors"
           >
             {product.category?.name}
           </Link>
           <span>/</span>
-          <span className="text-slate-800 font-bold truncate max-w-xs">{product.name}</span>
+          <span className="text-amber-400 font-bold truncate max-w-xs">{product.name}</span>
         </div>
 
         {/* Interactive Client PDP */}
@@ -89,19 +92,28 @@ export default async function ProductDetailPage({ params }) {
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <section className="border-t border-slate-200/90 pt-12">
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-6">
-              You Might Also Like
-            </h3>
+          <section className="border-t border-amber-500/20 pt-12">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-royal-title text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                <span>Complementary Creations</span>
+                <Crown size={18} className="text-amber-400" />
+              </h3>
+              <Link
+                href={`/shop?category=${product.category?.slug}`}
+                className="text-xs text-amber-400 hover:text-amber-300 font-bold uppercase tracking-wider"
+              >
+                View Category &rarr;
+              </Link>
+            </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {relatedProducts.map((p) => (
                 <Link
                   key={p.id}
                   href={`/product/${p.slug}`}
-                  className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                  className="group bg-[#0E0E14] rounded-3xl overflow-hidden border border-amber-500/20 shadow-md hover:border-amber-400/70 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col"
                 >
-                  <div className="aspect-[3/4] w-full overflow-hidden bg-slate-100">
+                  <div className="aspect-[3/4] w-full overflow-hidden bg-stone-900">
                     {p.mainImage && (
                       <img
                         src={p.mainImage}
@@ -111,11 +123,11 @@ export default async function ProductDetailPage({ params }) {
                     )}
                   </div>
                   <div className="p-4 flex-1 flex flex-col justify-between">
-                    <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm line-clamp-1 group-hover:text-emerald-700">
+                    <h4 className="font-serif-luxury font-bold text-stone-100 text-xs sm:text-sm line-clamp-1 group-hover:text-amber-300 transition-colors">
                       {p.name}
                     </h4>
-                    <p className="font-black text-slate-900 text-sm mt-2">
-                      {formatPrice(p.sellingPrice)}
+                    <p className="font-black text-amber-400 text-sm mt-2 font-serif-luxury">
+                      {formatPrice(p.sellingPrice, currencySymbol)}
                     </p>
                   </div>
                 </Link>

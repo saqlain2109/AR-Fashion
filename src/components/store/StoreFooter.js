@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin, ShieldCheck, Heart, Sparkles, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Heart, Sparkles, MessageCircle, Crown } from 'lucide-react';
 
 export default function StoreFooter({ settings = null }) {
   const businessName = settings?.businessName || 'AR Fashion House';
@@ -7,87 +7,73 @@ export default function StoreFooter({ settings = null }) {
   const secondaryPhone = settings?.secondaryPhone || '+918080010107';
   const email = settings?.businessEmail || 'contact@arfashionhouse.com';
   const address = settings?.address;
-  const storeLogo = settings?.storeLogo;
+  const storeLogo = settings?.storeLogo || '/images/ar-fashion-logo.jpg';
   const facebookUrl = settings?.facebookUrl;
   const instagramUrl = settings?.instagramUrl;
   const whatsappUrl = settings?.whatsappUrl;
-
-  const initials = businessName
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() || 'AR';
 
   const cleanPrimary = primaryPhone.replace(/[^0-9]/g, '');
   const cleanSecondary = secondaryPhone ? secondaryPhone.replace(/[^0-9]/g, '') : null;
 
   return (
-    <footer className="bg-[#0B132B] text-slate-400 text-xs border-t border-slate-800">
+    <footer className="bg-[#040406] text-stone-400 text-xs border-t border-amber-500/20">
       {/* Upper Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand Col */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2.5">
-            {storeLogo ? (
-              <img
-                src={storeLogo}
-                alt={businessName}
-                className="w-9 h-9 object-contain rounded-xl bg-white p-1 border border-slate-700"
-              />
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-emerald-950 border border-amber-500/40 text-amber-300 font-serif-luxury font-bold text-base flex items-center justify-center">
-                {initials}
-              </div>
-            )}
+          <div className="flex items-center gap-3">
+            <img
+              src={storeLogo}
+              alt={businessName}
+              className="h-14 w-auto object-contain rounded-lg drop-shadow-[0_2px_10px_rgba(212,175,55,0.3)]"
+            />
             <div>
-              <span className="font-serif-luxury font-bold text-white text-base block tracking-tight">
+              <span className="font-royal-title font-black text-white text-base block tracking-[0.14em] uppercase gold-gradient-text">
                 {businessName}
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-emerald-400 font-bold block">
-                Haute Couture
+              <span className="font-royal-script text-sm text-amber-300/90 tracking-wide block -mt-0.5">
+                Your Style Our Passion
               </span>
             </div>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed font-normal">
-            Handcrafted traditional & contemporary ethnic luxury clothing tailored for supreme perfection.
+          <p className="text-xs text-stone-400 leading-relaxed font-normal">
+            Handcrafted traditional & contemporary ethnic luxury clothing tailored with pure fabrics and intricate zari masterworks.
           </p>
-          <div className="pt-2 text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
-            <ShieldCheck size={14} />
-            <span>100% Quality Fabrics & Handcraft</span>
+          <div className="pt-2 text-[11px] text-amber-400 font-semibold flex items-center gap-1.5">
+            <Crown size={14} className="text-amber-400" />
+            <span>100% Authentic Handloom & Master Embroidery</span>
           </div>
         </div>
 
         {/* Quick Links */}
         <div className="space-y-3">
-          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
-            Quick Links
+          <h4 className="font-royal-title text-amber-200 font-bold text-xs tracking-widest uppercase">
+            Quick Navigation
           </h4>
           <ul className="space-y-2 text-xs font-medium">
             <li>
-              <Link href="/" className="hover:text-emerald-400 transition-colors">
+              <Link href="/" className="hover:text-amber-300 transition-colors">
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/shop" className="hover:text-emerald-400 transition-colors">
+              <Link href="/shop" className="hover:text-amber-300 transition-colors">
                 Complete Catalog
               </Link>
             </li>
             <li>
-              <Link href="/shop?filter=featured" className="hover:text-emerald-400 transition-colors">
+              <Link href="/shop?filter=featured" className="hover:text-amber-300 transition-colors">
                 Featured Highlights
               </Link>
             </li>
             <li>
-              <Link href="/shop?filter=new" className="hover:text-emerald-400 transition-colors">
-                New Arrivals
+              <Link href="/shop?filter=new" className="hover:text-amber-300 transition-colors">
+                New Arrivals 2026
               </Link>
             </li>
             <li>
-              <Link href="/#about" className="hover:text-emerald-400 transition-colors">
-                Brand Heritage
+              <Link href="/#about" className="hover:text-amber-300 transition-colors">
+                Brand Heritage & Atelier
               </Link>
             </li>
           </ul>
@@ -95,27 +81,27 @@ export default function StoreFooter({ settings = null }) {
 
         {/* Store Policies */}
         <div className="space-y-3">
-          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
+          <h4 className="font-royal-title text-amber-200 font-bold text-xs tracking-widest uppercase">
             Store Policies
           </h4>
           <ul className="space-y-2 text-xs font-medium">
             <li>
-              <Link href="/policies/shipping-policy" className="hover:text-emerald-400 transition-colors">
+              <Link href="/policies/shipping-policy" className="hover:text-amber-300 transition-colors">
                 Shipping & Express Delivery
               </Link>
             </li>
             <li>
-              <Link href="/policies/return-policy" className="hover:text-emerald-400 transition-colors">
+              <Link href="/policies/return-policy" className="hover:text-amber-300 transition-colors">
                 Return & Size Exchange
               </Link>
             </li>
             <li>
-              <Link href="/policies/privacy-policy" className="hover:text-emerald-400 transition-colors">
+              <Link href="/policies/privacy-policy" className="hover:text-amber-300 transition-colors">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/policies/terms-conditions" className="hover:text-emerald-400 transition-colors">
+              <Link href="/policies/terms-conditions" className="hover:text-amber-300 transition-colors">
                 Terms and Conditions
               </Link>
             </li>
@@ -124,7 +110,7 @@ export default function StoreFooter({ settings = null }) {
 
         {/* Contact info & WhatsApp order */}
         <div className="space-y-3">
-          <h4 className="text-white font-serif-luxury font-bold text-sm tracking-wider uppercase">
+          <h4 className="font-royal-title text-amber-200 font-bold text-xs tracking-widest uppercase">
             Contact & WhatsApp
           </h4>
           <div className="space-y-3 text-xs">
@@ -136,90 +122,55 @@ export default function StoreFooter({ settings = null }) {
                   href={`https://wa.me/${cleanPrimary}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-slate-100 font-mono font-bold hover:text-emerald-400 transition-colors"
+                  className="block text-stone-100 font-mono font-bold hover:text-amber-300 transition-colors"
                 >
                   {primaryPhone}
                 </a>
-                <span className="text-[10px] text-emerald-400/90 font-medium flex items-center gap-1">
+                <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
                   <MessageCircle size={10} />
-                  <span>Primary WhatsApp Helpline</span>
+                  <span>Primary WhatsApp Concierge</span>
                 </span>
               </div>
             </div>
 
             {/* Secondary Phone if available */}
-            {secondaryPhone && (
+            {cleanSecondary && (
               <div className="flex items-start gap-2.5">
-                <Phone size={14} className="text-teal-400 shrink-0 mt-0.5" />
+                <Phone size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <a
                     href={`https://wa.me/${cleanSecondary}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-slate-100 font-mono font-bold hover:text-teal-400 transition-colors"
+                    className="block text-stone-300 font-mono font-bold hover:text-amber-300 transition-colors"
                   >
                     {secondaryPhone}
                   </a>
-                  <span className="text-[10px] text-slate-400 font-medium">Secondary Line & WhatsApp</span>
+                  <span className="text-[10px] text-amber-400/80 font-medium">
+                    Secondary Support Line
+                  </span>
                 </div>
               </div>
             )}
 
             {/* Email */}
-            <div className="flex items-center gap-2.5">
-              <Mail size={14} className="text-emerald-400 shrink-0" />
-              <a
-                href={`mailto:${email}`}
-                className="text-slate-300 hover:text-white transition-colors"
-              >
-                {email}
-              </a>
-            </div>
-
-            {/* Physical address only if owner configured it in settings */}
-            {address && address.trim() !== '' && (
-              <div className="flex items-start gap-2.5 pt-1">
-                <MapPin size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                <span className="text-slate-400 leading-relaxed">{address}</span>
+            {email && (
+              <div className="flex items-center gap-2.5">
+                <Mail size={14} className="text-amber-400 shrink-0" />
+                <a
+                  href={`mailto:${email}`}
+                  className="text-stone-300 hover:text-amber-300 transition-colors truncate"
+                >
+                  {email}
+                </a>
               </div>
             )}
 
-            {/* Social Media Links */}
-            {(facebookUrl || instagramUrl || whatsappUrl) && (
-              <div className="pt-2 flex items-center gap-3">
-                {whatsappUrl && (
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-400 hover:text-white hover:bg-emerald-900 transition-colors"
-                    title="WhatsApp"
-                  >
-                    <MessageCircle size={13} />
-                  </a>
-                )}
-                {facebookUrl && (
-                  <a
-                    href={facebookUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-blue-900/50 transition-colors"
-                    title="Facebook"
-                  >
-                    <span className="font-bold text-[10px] px-0.5">fb</span>
-                  </a>
-                )}
-                {instagramUrl && (
-                  <a
-                    href={instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-pink-900/50 transition-colors"
-                    title="Instagram"
-                  >
-                    <span className="font-bold text-[10px] px-0.5">ig</span>
-                  </a>
-                )}
+            {/* Address */}
+            {address && (
+              <div className="flex items-start gap-2.5">
+                <MapPin size={14} className="text-amber-400 shrink-0 mt-0.5" />
+                <span className="text-stone-400 leading-snug">{address}</span>
               </div>
             )}
           </div>
@@ -227,12 +178,15 @@ export default function StoreFooter({ settings = null }) {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-slate-800/80 bg-[#070D1E] py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
-          <p>&copy; {new Date().getFullYear()} {businessName}. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Handcrafted with <Heart size={12} className="text-rose-500 fill-rose-500 inline" /> for fashion connoisseurs.
-          </p>
+      <div className="border-t border-white/5 py-6 bg-black/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
+          <div className="flex items-center gap-2">
+            <Crown size={12} className="text-amber-400" />
+            <span>&copy; {new Date().getFullYear()} {businessName}. All rights reserved.</span>
+          </div>
+          <div className="font-royal-script text-amber-300/80 text-sm">
+            Your Style Our Passion
+          </div>
         </div>
       </div>
     </footer>

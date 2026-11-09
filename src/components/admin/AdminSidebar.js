@@ -31,12 +31,38 @@ export default function AdminSidebar({
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [mastersOpen, setMastersOpen] = useState(true);
+  const [storeBrand, setStoreBrand] = useState({ name: 'AR FASHION', logo: '/images/ar-fashion-logo.jpg' });
 
   useEffect(() => {
     const saved = localStorage.getItem('ar_admin_sidebar_collapsed');
     if (saved !== null) {
       setCollapsed(saved === 'true');
     }
+
+    async function loadBrand() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data?.settings?.businessName) {
+          setStoreBrand({
+            name: data.settings.businessName,
+            logo: data.settings.storeLogo || '/images/ar-fashion-logo.jpg'
+          });
+        }
+      } catch (e) {}
+    }
+    loadBrand();
+
+    const handleUpdate = (e) => {
+      if (e?.detail?.businessName) {
+        setStoreBrand({
+          name: e.detail.businessName,
+          logo: e.detail.storeLogo || '/images/ar-fashion-logo.jpg'
+        });
+      }
+    };
+    window.addEventListener('store_settings_updated', handleUpdate);
+    return () => window.removeEventListener('store_settings_updated', handleUpdate);
   }, []);
 
   const toggleCollapse = () => {
@@ -109,12 +135,12 @@ export default function AdminSidebar({
             onClick={handleLinkClick}
             className="flex items-center gap-2 overflow-hidden"
           >
-            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-md shadow-emerald-900/40 shrink-0">
-              AR
+            <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-amber-500/30 bg-black flex items-center justify-center shadow-md">
+              <img src={storeBrand.logo} alt={storeBrand.name} className="w-full h-full object-contain" />
             </div>
             <div className={`truncate ${collapsed ? 'lg:hidden' : 'block'}`}>
-              <span className="font-bold text-white tracking-wide text-sm block">AR FASHION</span>
-              <span className="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">Admin Portal</span>
+              <span className="font-bold text-white tracking-wide text-sm block truncate">{storeBrand.name}</span>
+              <span className="text-[10px] text-amber-400 uppercase tracking-wider font-semibold">Admin Portal</span>
             </div>
           </Link>
 
