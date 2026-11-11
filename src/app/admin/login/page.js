@@ -1,12 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, ShieldCheck, ArrowRight, Loader2, AlertCircle, Sparkles } from 'lucide-react';
+import { Lock, Mail, ShieldCheck, ArrowRight, Loader2, AlertCircle, Eye, EyeOff, Crown } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@arfashion.com');
-  const [password, setPassword] = useState('Admin@12345');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -19,12 +20,12 @@ export default function AdminLoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Authentication failed. Please check credentials.');
+        throw new Error(data.error || 'Authentication failed. Please check your credentials.');
       }
 
       // Successful login
@@ -42,67 +43,86 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B132B] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#060608] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Subtle royal gold ambient lighting */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative w-full max-w-md bg-[#0F172A] border border-[#1E293B] rounded-3xl p-8 shadow-2xl text-slate-100">
+      <div className="relative w-full max-w-md bg-[#0E0E14] border border-amber-500/30 rounded-3xl p-7 sm:p-8 shadow-2xl shadow-black text-stone-100">
         {/* Brand Crest */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 mx-auto flex items-center justify-center font-black text-2xl text-white shadow-xl shadow-emerald-900/50 mb-3">
-            AR
+          <div className="w-20 h-20 mx-auto rounded-2xl overflow-hidden border border-amber-500/30 bg-black flex items-center justify-center shadow-lg shadow-amber-500/10 mb-3">
+            <img
+              src="/images/ar-fashion-logo.jpg"
+              alt="AR Fashion House"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">AR FASHION HOUSE</h1>
-          <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">
-            Separate Store Management Portal
+          <h1 className="font-royal-title text-xl sm:text-2xl font-black tracking-[0.14em] uppercase gold-gradient-text">
+            AR FASHION HOUSE
+          </h1>
+          <p className="text-[11px] text-amber-300/80 mt-1 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
+            <Crown size={12} className="text-amber-400" />
+            <span>Authorized Admin Portal</span>
           </p>
         </div>
 
         {/* Error notification */}
         {error && (
-          <div className="mb-6 p-3.5 bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-semibold rounded-xl flex items-center gap-2.5 animate-shake">
+          <div className="mb-6 p-3.5 bg-rose-950/70 border border-rose-800 text-rose-300 text-xs font-semibold rounded-xl flex items-center gap-2.5 animate-shake">
             <AlertCircle size={16} className="shrink-0 text-rose-400" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} autoComplete="off" className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-300">Administrator Email</label>
+            <label className="text-xs font-bold text-stone-300">Administrator Email</label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400/70" />
               <input
                 type="email"
+                name="ar_admin_email"
                 required
+                autoComplete="off"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@arfashion.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                placeholder="Enter administrator email"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#14141C] border border-white/10 rounded-xl text-sm text-white placeholder:text-stone-600 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-300">Password</label>
+            <label className="text-xs font-bold text-stone-300">Password</label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400/70" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
+                name="ar_admin_pass"
                 required
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                placeholder="Enter your password"
+                className="w-full pl-10 pr-11 py-2.5 bg-[#14141C] border border-white/10 rounded-xl text-sm text-white placeholder:text-stone-600 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-amber-300 transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold rounded-xl text-sm shadow-lg shadow-emerald-900/40 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+            className="w-full py-3.5 px-4 gold-gradient-btn text-black font-black rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 uppercase tracking-wider cursor-pointer"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
@@ -115,20 +135,11 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        {/* Pre-seeded credentials helper box */}
-        <div className="mt-8 pt-6 border-t border-slate-800 text-center">
-          <div className="p-3 bg-slate-900/80 border border-slate-800/80 rounded-xl text-left">
-            <p className="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5 mb-1">
-              <Sparkles size={13} />
-              <span>Default Owner Credentials (Pre-seeded):</span>
-            </p>
-            <div className="text-[11px] text-slate-400 space-y-0.5 font-mono">
-              <div>Email: <strong className="text-slate-200">admin@arfashion.com</strong></div>
-              <div>Password: <strong className="text-slate-200">Admin@12345</strong></div>
-            </div>
-          </div>
-          <p className="text-[11px] text-slate-500 mt-4">
-            Security Notice: Public user registration is disabled for administrator roles.
+        {/* Security Notice (No hardcoded or exposed credentials) */}
+        <div className="mt-7 pt-5 border-t border-white/5 text-center">
+          <p className="text-[11px] text-stone-500 flex items-center justify-center gap-1.5">
+            <ShieldCheck size={14} className="text-amber-400 shrink-0" />
+            <span>Protected Administrator Access Only. Unauthorized login attempts are restricted.</span>
           </p>
         </div>
       </div>

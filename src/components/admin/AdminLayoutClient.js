@@ -71,19 +71,19 @@ export default function AdminLayoutClient({ children, serverUser = null, categor
     return <div className="w-full">{children}</div>;
   }
 
-  // If checking authentication, show clean loader
-  if (checkingAuth) {
+  // If checking authentication or unauthenticated, show clean loader while redirecting
+  if (checkingAuth || (!user && !serverUser)) {
     return (
-      <div className="min-h-screen w-full bg-[#0F172A] flex flex-col items-center justify-center text-slate-300">
-        <Loader2 size={36} className="animate-spin text-emerald-500 mb-3" />
-        <p className="text-xs font-semibold tracking-wider uppercase text-slate-400">
+      <div className="min-h-screen w-full bg-[#070709] flex flex-col items-center justify-center text-stone-300">
+        <Loader2 size={36} className="animate-spin text-amber-400 mb-3" />
+        <p className="text-xs font-semibold tracking-wider uppercase text-stone-400">
           Verifying Administrator Session...
         </p>
       </div>
     );
   }
 
-  const currentUser = user || serverUser || { name: 'Store Owner', email: 'admin@arfashion.com', role: 'ADMIN' };
+  const currentUser = user || serverUser;
 
   return (
     <div className="min-h-screen bg-slate-100 flex text-slate-800">
